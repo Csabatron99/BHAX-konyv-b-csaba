@@ -1,0 +1,17 @@
+<authorgroup xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+  <author>
+    <personname>
+      <surname>Balla</surname>
+      <firstname>Csaba</firstname>
+    </personname>
+    <affiliation>
+      <shortaffil>Hallgató, DE.</shortaffil>
+      <jobtitle>Egyetemi halgató</jobtitle>
+      <orgname>Debreceni Egyetem</orgname>
+      <orgdiv>Informatika kar. Programtervező informatikus szak.</orgdiv>
+      <address>
+        <email>csabatron99@gmail.com</email>
+      </address>
+    </affiliation>
+  </author>
+</authorgroup>
