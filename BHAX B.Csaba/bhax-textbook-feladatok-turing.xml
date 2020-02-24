@@ -12,7 +12,7 @@
             100 százalékban minden magot!
         </para>
         <para>
-            Megoldás videó: <link xlink:href="https://youtu.be/lvmi6tyz-nI">https://youtu.be/lvmi6tyz-nI</link>
+            Megoldás videó(nbatfai): <link xlink:href="https://youtu.be/lvmi6tyz-nI">https://youtu.be/lvmi6tyz-nI</link>
         </para>
         <para>
             Megoldás forrása: <link xlink:href="Turing/infty-f.c">
@@ -104,7 +104,7 @@ main ()
 ]]>
         </programlisting>        
         <para>
-            A <command>gcc infty-f.c -o infty-f -fopenmp</command> parancssorral készítve a futtathatót, majd futtatva,               
+            A <command>gcc [filename].c -o [filename] -fopenmp</command> parancssorral készítve a futtathatót, majd futtatva,               
             közben egy másik terminálban a <command>top</command> parancsot kiadva tanulmányozzuk, mennyi CPU-t használunk:            
         </para>
         <screen><![CDATA[top - 20:09:06 up  3:35,  1 user,  load average: 5,68, 2,91, 1,38
@@ -113,12 +113,6 @@ Tasks: 329 total,   2 running, 256 sleeping,   0 stopped,   1 zombie
 %Cpu1 : 99,7 us, 0,3 sy, 0,0 ni, 0,0 id, 0,0 wa, 0,0 hi, 0,0 si, 0,0 st
 %Cpu2 :100,0 us, 0,0 sy, 0,0 ni, 0,0 id, 0,0 wa, 0,0 hi, 0,0 si, 0,0 st
 %Cpu3 : 99,7 us, 0,3 sy, 0,0 ni, 0,0 id, 0,0 wa, 0,0 hi, 0,0 si, 0,0 st
-%Cpu4 :100,0 us, 0,0 sy, 0,0 ni, 0,0 id, 0,0 wa, 0,0 hi, 0,0 si, 0,0 st
-%Cpu5 :100,0 us, 0,0 sy, 0,0 ni, 0,0 id, 0,0 wa, 0,0 hi, 0,0 si, 0,0 st
-%Cpu6 :100,0 us, 0,0 sy, 0,0 ni, 0,0 id, 0,0 wa, 0,0 hi, 0,0 si, 0,0 st
-%Cpu7 :100,0 us, 0,0 sy, 0,0 ni, 0,0 id, 0,0 wa, 0,0 hi, 0,0 si, 0,0 st
-KiB Mem :16373532 total,11701240 free, 2254256 used, 2418036 buff/cache
-KiB Swap:16724988 total,16724988 free,       0 used. 13751608 avail Mem 
 
   PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND     
  5850 batfai    20   0   68360    932    836 R 798,3  0,0   8:14.23 infty-f     
@@ -218,7 +212,10 @@ false]]></screen>
             függvényt, azaz a T100 program nem is létezik.                
         </para>
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+            Ez a feladat a megállási probléma bemutatására szolgál. A megálláso problémea abból áll, hogy el lehet-e döntenti
+            egy programról adott bemenet esetén, hogy végtelen ciklusba kerül-e. Alan Turin 1963-ban bizonyította be, hogy nem 
+            lehetséges olyan álltalános algoritmust írni, amely minden program-bemenet párról megmondja, hogy végtelen ciklusba 
+            kerül-e.
         </para>
     </section>        
                 
@@ -229,13 +226,113 @@ false]]></screen>
             nasználata nélkül!
         </para>
         <para>
-            Megoldás videó: <link xlink:href="https://bhaxor.blog.hu/2018/08/28/10_begin_goto_20_avagy_elindulunk">https://bhaxor.blog.hu/2018/08/28/10_begin_goto_20_avagy_elindulunk</link>
+            Megoldás videó(nbatfai): <link xlink:href="https://bhaxor.blog.hu/2018/08/28/10_begin_goto_20_avagy_elindulunk">https://bhaxor.blog.hu/2018/08/28/10_begin_goto_20_avagy_elindulunk</link>
         </para>
         <para>
             Megoldás forrása:  
         </para>
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+            Változócserére több lehetőség is van, 4 féle alap módszer van. Ezek lehetnek:
+            <itemizedlist>
+              <listitem>
+                <para>Segédváltozóval</para>   
+              </listitem>
+              <listitem>
+                <para>Kivonással / Összeadással</para> 
+              </listitem>
+              <listitem>
+                 <para>XOR logikai módszer</para>
+              </listitem>
+            </itemizedlist>
+        </para>
+        <para>
+            Az első példára a segédváltozónak van jó és rossz oldala is. A jó oldala, hogy ez a legkönyebb mindközül logikailag 
+          kitalálni és programba illetve pszeudokódba írni. A rossz oldala pedig a segédváltozó miatt van. A plusz változó miatt 
+          több helyet kell lefoglalni.
+            
+            C beli leírása a következő:
+        </para>
+        <programlisting language="c">
+<![CDATA[
+#include <stdio.h>
+int main()
+{
+	int tmp = 0,a =1,b = 2;
+	tmp = a;
+	a = b;
+	b = tmp;
+}]]>    
+        </programlisting> 
+        <para>
+            A  második példához a matematikailag ismert osszeadási és kivonási szabályokból ismeretes elemeket használjuk fel. Az egyik a következő:  
+            a = a + b
+            b = a - b
+            a = a - b
+            Lássuk végrehajtva. Az első lépésben a = 20 + 10 = 30 lesz. Utána b = 30 - 10 = 20, vagyis b-be máris bekerült a eredeti értéke,
+            a harmadik lépésben pedig a = 30 - 20 = 10, puff, helyet cserélt a kettő!
+            
+            A másik ilyen módszer a következő:
+            a = a - b
+	          b = a + b
+	          a = b - a
+            Ezt is lássuk végrehajtva. Az első lépésben a = 20 - 10 = 10 lesz. Utána b = 10 + 10 = 20, vagyis b-be máris bekerült a eredeti értéke,
+            a harmadik lépésben pedig a = 20 - 10 = 10, és így helyet cserélt a kettő!
+            
+            C beli leírása a következő:
+        </para>
+        <programlisting language="c">
+<![CDATA[
+#include <stdio.h>
+int main()
+{
+	int a =1,b = 2;
+	a = a + b;
+  b = a - b;
+  a = a - b;
+}]]>    
+        </programlisting> 
+        <programlisting language="c">
+<![CDATA[
+#include <stdio.h>
+int main()
+{
+	int a =1,b = 2;
+	a = a - bé
+  b = a + bé
+  a = b - a;
+}]]>    
+        </programlisting> 
+          <para>
+           Az utoló módszerről pedig kicsit többet kell beszéljünk mivel az már egy kicsivel bonyolultabb, helytelen működésű és lassab. 
+           
+           Először nézzük, hogy mi is az az XOR csere:
+              Annak idején, amikor még mindenki Assembly nyelvű programokat írt, rengeteg apró optimalizálást kézzel végeztek el a programozók. 
+            Például egy regiszter nullázása helyett: movl $0, eax (C-ben: eax = 0), inkább saját magával XOR kapcsolatba hozták azt: xorl eax, eax (eax ^= eax). 
+            Mert ez kevesebb bájtot foglalt, nem kellett a 0 számot eltárolni hozzá a memóriában. Akkoriban jöttek rá arra is, hogy két regiszter értékét szintén meg lehet 
+            cserélni az xor gépi utasítással.
+              A módszer előnye, hogy nincsen hozzá szükség segédregiszterre. Eddig minden rendben is lenne. A baj csak az, hogy a '70-es években kitalált, 
+            az akkori szemléletet tükröző módszer annyira beszivárgott a köztudatba, hogy egyesek manapság is használják, magas szintű programozási nyelveken. 
+            A XXI. században, amikor a fordítóprogramok legtöbbje gyorsabb kódot tud generálni, mint amilyen Assembly kódot az emberek írnának.
+              
+          Magával a módszerrel az a baj, hogy sok programozó nem értené mit akarunk ezzel a programrésszel valamint sokkal nehezebb megérteni, ezért nem terjedt el és nem is szokták
+          használni viszont úgy éreztem jólenne bemutatni mivel ha valamilyen oknál fogva talalkoznál vele akkor tudd, hogy mi is ez pontosan és egy érdekességnek is elkönyvelhető.
+              
+            C beli leírása pedig a következő:
+        <programlisting language="c">
+<![CDATA[
+#include <stdio.h>
+int main()
+{
+	int a =1,b = 2;
+  a ^= b;
+	b ^= a;
+	a ^= b;
+}]]>    
+        </programlisting> 
+        </para>
+        <para>
+              A tanulságnak levonhatjuk azt, hogy a segédváltozó segítségével a legkönyebb viszont a második módszerrel nem kell külön lefoglalni helyet a segédváltozónak. 
+            Az XOR módszer pedig nem ajánlott használni a fenti okokból kifolyólag. Így a második módszert ajánlom használatra változócsere esetén.
         </para>
     </section>                     
 
@@ -247,13 +344,92 @@ false]]></screen>
             pattogtatás alatt, alább láthatod a videókon.)
         </para>
         <para>
-            Megoldás videó: <link xlink:href="https://bhaxor.blog.hu/2018/08/28/labdapattogas">https://bhaxor.blog.hu/2018/08/28/labdapattogas</link>
+            Megoldás videó (nbatfai): <link xlink:href="https://bhaxor.blog.hu/2018/08/28/labdapattogas">https://bhaxor.blog.hu/2018/08/28/labdapattogas</link>
         </para>
         <para>
             Megoldás forrása:  
         </para>
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+            Az if es megoldás C kódja:  
+        </para>
+        <programlisting language="c">
+<![CDATA[
+#include <stdio.h>
+#include <curses.h>
+#include <unistd.h>
+
+int main(void)
+{
+	WINDOW *window;
+	window = initscr();
+	int x=0, y=0;
+	int xnow=1, ynow=1;
+	int mx,my;
+	for(;;)
+	{
+		getmaxyx(window,my,mx);
+		mvprintw(y,x,"O");
+		refresh();
+		usleep(100000);
+		clear();
+		x=x+xnow;
+		y=y+ynow;
+		if (x>=mx-1) //Elerte-e a jobb oldalt?
+		{
+			xnow = xnow*-1;
+		}
+		if (x<=0) //Elerte-e a bal oldalt?
+		{
+			xnow = xnow*-1;
+		}
+		if (y<=0) //Elerte-e a tetejet?
+		{
+			ynow=ynow*-1;
+		}
+		if (y>=my-1) //Elerte-e az aljat?
+		{
+			ynow = ynow*-1;
+		}
+	}
+	return 0;
+}]]>    
+        </programlisting> 
+        <para>
+            Az if nélküli megoldás C kódja:  
+        </para>
+        <programlisting language="c">
+<![CDATA[
+#include <stdio.h>
+#include <stdlib.h>
+#include <curses.h>
+#include <unistd.h>
+
+int main(void)
+{
+	WINDOW *window;
+	window = initscr();
+	int xj=0, xk=0, yj=0, yk=0;
+	int mx,my;
+	nodelay(window, true);
+	getmaxyx(window,my,mx);
+	my=my*2;mx=mx*2;
+	for(;;)
+	{
+		xj = (xj-1)%mx;
+		xk = (xk+1)%mx;
+		yj = (yj-1)%my;
+		yk = (yk+1)%my;
+		clear();
+		mvprintw(abs((yj+(my-yk)) / 2),abs((xj+(mx-xk)) / 2), "O");
+		refresh();
+		usleep(100000);
+	}
+	return 0;
+}]]>    
+        </programlisting> 
+        <para>
+            A logikai változós megoldás könyen megoldható viszont enélkül eléggé megnehezítette a dolgomat. Végül sikerült megoldanom néhány érték atfésüléssel ahogy az a fenti példában
+            is látható. Részletesebb magyarázatért megtekintheted a videót.
         </para>
     </section>                     
 
@@ -264,17 +440,37 @@ false]]></screen>
             Használd ugyanazt a while ciklus fejet, amit Linus Torvalds a BogoMIPS rutinjában! 
         </para>
         <para>
-            Megoldás videó: <link xlink:href="https://youtu.be/9KnMqrkj_kU">https://youtu.be/9KnMqrkj_kU</link>, 
+            Megoldás videó(nbatfai): <link xlink:href="https://youtu.be/9KnMqrkj_kU">https://youtu.be/9KnMqrkj_kU</link>, 
             <link xlink:href="https://youtu.be/KRZlt1ZJ3qk">https://youtu.be/KRZlt1ZJ3qk</link>, 
             <link xlink:href=""></link>.
         </para>
         <para>
-            Megoldás forrása: <link xlink:href="Turing/bogomips.c">
+            Megoldás forrása(nbatfai): <link xlink:href="Turing/bogomips.c">
                 <filename>bhax/thematic_tutorials/bhax_textbook_IgyNeveldaProgramozod/Turing/bogomips.c</filename>
             </link>
         </para>
         <para>
-            Tanulságok, tapasztalatok, magyarázat... 
+            A megoldás C++ kódja:  
+        </para>
+        <programlisting language="c">
+<![CDATA[
+#include <iostream>
+int main()
+{
+	int num = -1;
+	int count = 0;
+	unsigned int num_copy = (unsigned int)num;
+	while(num_copy >>=1)
+	{
+		count++;
+	}
+	printf("%d",(count+1));
+	return 0;
+}]]>
+        </programlisting> 
+        <para>
+            Először elég sokáig gondolkodtam, hogy a feladatban pontosan mit is kell csinálni mi is az amit kér. Egy barátom segítségével aki felsőbbéves rájöttem, innestől már elég 
+            könyen ment a feladat megoldása és a meglévő algoritmus átírása.
         </para>
     </section>                     
 
@@ -291,7 +487,59 @@ false]]></screen>
             Megoldás forrása: <link xlink:href=""></link>
         </para>
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+            A megoldás C kódja:  
+        </para>
+        <programlisting language="c">
+<![CDATA[
+#include <stdio.h>
+#include <math.h>
+
+void kiir (double tomb[], int db)
+{
+	int i;
+	for (i=0; i<db; i++)
+	printf("%lf\n", tomb[i]);
+}
+double tavolsag(double pagerank[],double pagerank_temp[],int db)
+{
+	double tav = 0.0;
+	int i;
+	for(i=0;i<db;i++)
+		tav+=(pagerank[i] - pagerank_temp[i])*(pagerank[i] - pagerank_temp[i]);
+	sqrt(tav);
+	return tav;
+}
+int main(void)
+{
+	double L[4][4] = {
+		{0.0, 0.0, 1.0 / 3.0, 0.0},
+		{1.0, 1.0 / 2.0, 1.0 / 3.0, 1.0},
+		{0.0, 1.0 / 2.0, 0.0, 0.0},
+		{0.0, 0.0, 1.0 / 3.0, 0.0}
+	};
+	double PR[4] = {0.0, 0.0, 0.0, 0.0};
+	double PRv[4] = {1.0 / 4.0, 1.0 / 4.0, 1.0 / 4.0, 1.0 / 4.0};
+	for (;;) 
+	{
+		for(int i=0;i<4;i++)
+		{
+			PR[i]=0;
+			for (int j=0;j<4;j++)
+			{    
+				 PR[i] = PR[i]+(PRv[j]*L[i][j]);
+			}
+		}
+		if ( tavolsag(PR,PRv, 4) < 0.00000001)
+			break;
+		for(int i=0;i<4;i++)
+			PRv[i]=PR[i];
+	}
+	kiir (PR,4);
+	return 0;
+} ]]>
+        </programlisting> 
+        <para>
+            Mivel pagerank ot már sikerült megírjam egyszer C++-ban így az átírás könyedén megoldható volt. 
         </para>
     </section>
                                                                                                                                                                                                                                                                                                                                                         
@@ -301,13 +549,48 @@ false]]></screen>
             Írj R szimulációt a Monty Hall problémára!
         </para>
         <para>
-            Megoldás videó: <link xlink:href="https://bhaxor.blog.hu/2019/01/03/erdos_pal_mit_keresett_a_nagykonyvben_a_monty_hall-paradoxon_kapcsan">https://bhaxor.blog.hu/2019/01/03/erdos_pal_mit_keresett_a_nagykonyvben_a_monty_hall-paradoxon_kapcsan</link>
+            Megoldás videó(nbatfai): <link xlink:href="https://bhaxor.blog.hu/2019/01/03/erdos_pal_mit_keresett_a_nagykonyvben_a_monty_hall-paradoxon_kapcsan">https://bhaxor.blog.hu/2019/01/03/erdos_pal_mit_keresett_a_nagykonyvben_a_monty_hall-paradoxon_kapcsan</link>
         </para>
         <para>
-            Megoldás forrása: <link xlink:href="https://gitlab.com/nbatfai/bhax/tree/master/attention_raising/MontyHall_R">https://gitlab.com/nbatfai/bhax/tree/master/attention_raising/MontyHall_R</link>
+            Megoldás forrása(nbatfai): <link xlink:href="https://gitlab.com/nbatfai/bhax/tree/master/attention_raising/MontyHall_R">https://gitlab.com/nbatfai/bhax/tree/master/attention_raising/MontyHall_R</link>
         </para>
+        <programlisting language="R">
+<![CDATA[
+kis_szam=10000000
+kis=sample(1:3,kis_szam,replace=T)
+jatekos=sample(1:3,kis_szam,replace=T)
+vezeto=vector(length=kis_szam)
+for(i in 1:kis_szam)
+{
+	if(kis[i]==jatekos[i])
+	{
+		mibol=setdiff(c(1,2,3),kis[i])
+	}
+	else
+	{
+		mibol=setdiff(c(1,2,3),c(kis[i],jatekos[i]))
+	}
+	vezeto[i]=mibol[sample(1:length(mibol),1)]
+}
+nemvaltnyer=which(kis==jatekos)
+valt=vector(length=kis_szam)
+for(i in 1:kis_szam)
+{
+	holvaltoztat=setdiff(c(1,2,3),c(vezeto[i],jatekos[i]))
+	valt[i]=holvaltoztat[sample(1:length(holvaltoztat),1)]
+}
+valtnyer=which(kis==valt)
+sprintf("Kiserletek szama: %i",kis_szam)
+length(nemvaltnyer)
+length(valtnyer)
+length(nemvaltnyer)/length(valtnyer)
+length(nemvaltnyer)+length(valtnyer)
+]]>
+        </programlisting> 
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+            Őszintén megvallva életemben nem hallodtam a Monty Hall problémáról eddig. Viszont informálódva Bátfai anyagaiból  hamar megtudtam érteni a lényegét és
+            összerakni a szimulációt. Igaz magáról az R nyelvről sem hallodtam de ahogy az alapjait kezdtem nézni be kell valjam nem nehéz nyelv valamitn nem valami elterjedt
+            a használata. 
         </para>
     </section>
 
@@ -317,10 +600,10 @@ false]]></screen>
             Írj R szimulációt a Brun tétel demonstrálására!
         </para>
         <para>
-            Megoldás videó: <link xlink:href="https://youtu.be/xbYhp9G6VqQ">https://youtu.be/xbYhp9G6VqQ</link>
+            Megoldás videó(nbatfai): <link xlink:href="https://youtu.be/xbYhp9G6VqQ">https://youtu.be/xbYhp9G6VqQ</link>
         </para>
         <para>
-            Megoldás forrása: <link xlink:href="https://gitlab.com/nbatfai/bhax/blob/master/attention_raising/Primek_R">https://gitlab.com/nbatfai/bhax/blob/master/attention_raising/Primek_R</link>
+            Megoldás forrása(nbatfai): <link xlink:href="https://gitlab.com/nbatfai/bhax/blob/master/attention_raising/Primek_R">https://gitlab.com/nbatfai/bhax/blob/master/attention_raising/Primek_R</link>
         </para>
 
         <para>
@@ -366,7 +649,7 @@ false]]></screen>
                 <para>(n+1)!+n=1*2*3*… *(n-1)*n*(n+1)+n, azaz n*valamennyi+n-, ami osztható n-el</para>
             </listitem>
             <listitem>
-                <para>(n+1)!+(n+1)=1*2*3*… *(n-1)*n*(n+1)+(n-1), azaz (n+1)*valamennyi+(n+1), ami osztható (n+1)-el</para>
+                <para>(n+1)!+(n+1)=1*2*3*… *(n-1)*n*(n+1)+(n+1), azaz (n+1)*valamennyi+(n+1), ami osztható (n+1)-el</para>
             </listitem>
         </itemizedlist>
         <para>
@@ -418,13 +701,13 @@ library(matlab)
 
 stp <- function(x){
 
-    primes = primes(x)
-    diff = primes[2:length(primes)]-primes[1:length(primes)-1]
-    idx = which(diff==2)
-    t1primes = primes[idx]
-    t2primes = primes[idx]+2
-    rt1plust2 = 1/t1primes+1/t2primes
-    return(sum(rt1plust2))
+    primek = primes(x)
+    differencia = primek[2:length(primes)]-primek[1:length(primes)-1]
+    index = which(differencia==2)
+    v1primek = primek[idx]
+    v2primek = primek[idx]+2
+    v1pv2 = 1/v1primek+1/v2primek
+    return(sum(v1pv2))
 }
 
 x=seq(13, 1000000, by=10000)
@@ -436,24 +719,24 @@ plot(x,y,type="b")
             Soronként értelemezzük ezt a programot:
         </para>                
         <programlisting language="R">
-<![CDATA[ primes = primes(13)]]>
+<![CDATA[ primek = primes(13)]]>
         </programlisting>        
         <para>
             Kiszámolja a megadott számig a prímeket.             
         </para>
         <screen>
-<![CDATA[> primes=primes(13)
-> primes
+<![CDATA[> primek=primes(13)
+> primek
 [1]  2  3  5  7 11 13
 ]]>
         </screen>
                 
         <programlisting language="R">
-<![CDATA[ diff = primes[2:length(primes)]-primes[1:length(primes)-1]]]>
+<![CDATA[ diff = primek[2:length(primes)]-primek[1:length(primek)-1]]]>
         </programlisting>        
         <screen>
-<![CDATA[> diff = primes[2:length(primes)]-primes[1:length(primes)-1]
-> diff
+<![CDATA[> diff = primek[2:length(primes)]-primek[1:length(primek)-1]
+> differencia
 [1] 1 2 2 4 2
 ]]>
         </screen>        
@@ -461,26 +744,26 @@ plot(x,y,type="b")
             Az egymást követő prímek különbségét képzi, tehát 3-2, 5-3, 7-5, 11-7, 13-11.
         </para>
         <programlisting language="R">
-<![CDATA[idx = which(diff==2)]]>
+<![CDATA[index = which(diff==2)]]>
         </programlisting>        
         <screen>
-<![CDATA[> idx = which(diff==2)
-> idx
+<![CDATA[> index = which(diff==2)
+> index
 [1] 2 3 5
 ]]>
         </screen>              
         <para>
-            Megnézi a <varname>diff</varname>-ben, hogy melyiknél lett kettő az eredmény, mert azok az ikerprím párok, ahol ez igaz.
-            Ez a <varname>diff</varname>-ben lévő 3-2, 5-3, 7-5, 11-7, 13-11 külünbségek közül ez a 2., 3. és 5. indexűre teljesül.
+            Megnézi a <varname>differencia</varname>-ban, hogy melyiknél lett kettő az eredmény, mert azok az ikerprím párok, ahol ez igaz.
+            Ez a <varname>differencia</varname>-ban lévő 3-2, 5-3, 7-5, 11-7, 13-11 külünbségek közül ez a 2., 3. és 5. indexűre teljesül.
         </para>
         <programlisting language="R">
-<![CDATA[t1primes = primes[idx]]]>
+<![CDATA[v1primek = primek[index]]]>
         </programlisting>  
         <para>
             Kivette a primes-ból a párok első tagját. 
         </para>
         <programlisting language="R">
-<![CDATA[t2primes = primes[idx]+2]]>
+<![CDATA[v2primek = primek[index]+2]]>
         </programlisting>        
         <para>
             A párok második tagját az első tagok kettő hozzáadásával képezzük.
@@ -489,23 +772,23 @@ plot(x,y,type="b")
 <![CDATA[rt1plust2 = 1/t1primes+1/t2primes]]>
         </programlisting>        
         <para>
-            Az 1/t1primes a t1primes 3,5,11 értékéből az alábbi reciprokokat képzi:
+            Az 1/v1primek a v1primek 3,5,11 értékéből az alábbi reciprokokat képzi:
         </para>
         <screen>
-<![CDATA[> 1/t1primes
+<![CDATA[> 1/v1primek
 [1] 0.33333333 0.20000000 0.09090909
 ]]>
         </screen>                      
         <para>
-            Az 1/t2primes a t2primes 5,7,13 értékéből az alábbi reciprokokat képzi:
+            Az 1/v2primek a v2primek 5,7,13 értékéből az alábbi reciprokokat képzi:
         </para>
         <screen>
-<![CDATA[> 1/t2primes
+<![CDATA[> 1/v2primek
 [1] 0.20000000 0.14285714 0.07692308
 ]]>
         </screen>                      
         <para>
-            Az 1/t1primes + 1/t2primes pedig ezeket a törteket rendre összeadja.
+            Az 1/v1primek + 1/v2primek pedig ezeket a törteket rendre összeadja.
         </para>
         <screen>
 <![CDATA[> 1/t1primes+1/t2primes
