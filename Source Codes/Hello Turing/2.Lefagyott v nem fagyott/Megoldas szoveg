@@ -1,0 +1,1 @@
+Ez a feladat a megallasi problema bemutatasara szolgal. A megallasi problema abbol all hogy el lehet-e doneni egy programrol adott bemenet eseten hogy vegtelen ciklusba kerul-e. Alan Turin 1963-ban bizonyitotta be, hogy nem lehetseges olyan alltalanos algoritmust irni, amely minden program-bemenet parrol megmondja, hogy vegtelen ciklusba kerul-e.
