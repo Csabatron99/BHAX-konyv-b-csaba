@@ -1,4 +1,4 @@
-<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+ <chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
     <info>
         <title>Helló, Chomsky!</title>
         <keywordset>
@@ -11,16 +11,94 @@
             Állapotátmenet gráfjával megadva írd meg ezt a gépet!
         </para>
         <para>
-            Megoldás videó:
+            A megoldáshoz tartozik egy kód, amit konyen lehet vizualizálni és futtatni a kobvetkező linken: <link href="https://turingmachine.io/">https://turingmachine.io/</link>
+
+          A kód pedig a követekező:
+          <programlisting language="turing">
+            <![CDATA[%{
+#https://turingmachine.io/
+input: '12'
+blank: ' '
+start state: GoRight
+table:
+  # scan to the rightmost digit
+  GoRight:
+    [0,1,2,3,4,5,6,7,8,9]: R
+    ' '  : {L: Decrease}
+    
+  Decrease:
+    ' ': {R: done}
+    0: {L: 0ism}
+    1: {write: 0, R: ToUniStartP}
+    2: {write: 1, R: ToUniStartP}
+    3: {write: 2, R: ToUniStartP}
+    4: {write: 3, R: ToUniStartP}
+    5: {write: 4, R: ToUniStartP}
+    6: {write: 5, R: ToUniStartP}
+    7: {write: 6, R: ToUniStartP}
+    8: {write: 7, R: ToUniStartP}
+    9: {write: 8, R: ToUniStartP}
+    
+  ToUniStartP:
+    [0,1,2,3,4,5,6,7,8,9]: R
+    ' '  : {R: ToUniEndP}
+    
+  ToUniEndP:
+    1: R
+    ' ': {write: 1, L: ToDecimalStartP}
+    
+  ToDecimalStartP:
+    1: L
+    ' ': {L: Decrease}
+    
+  0ism:
+    0: {L: 0ism}
+    ' ': {R: done}
+    1: {write: 0, R: TENmONE}
+    2: {write: 1, R: TENmONE}
+    3: {write: 2, R: TENmONE}
+    4: {write: 3, R: TENmONE}
+    5: {write: 4, R: TENmONE}
+    6: {write: 5, R: TENmONE}
+    7: {write: 6, R: TENmONE}
+    8: {write: 7, R: TENmONE}
+    9: {write: 8, R: TENmONE}
+    
+  TENmONE:
+    0: {write: 9, R: TENmONE}
+    ' ': {L: ToUniStartP}
+  done:
+}
+]]>
+          </programlisting>
+        </para>
+      
+        <para>
+          A turing gép vizualizációja:
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="img/TuringDecimalTOUniral.png" scale="50" />
+                </imageobject>
+                <textobject>
+                    <phrase>Decimal to Uniral turing gép</phrase>
+                </textobject>
+            </mediaobject>
         </para>
         <para>
-            Megoldás forrása:                
+            Megoldás videó: (Hamarosan)
         </para>
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+            Megoldás forrása:   (hamarosan)             
         </para>
+        <para>
+          Ilyen tárgyunk ahol ezzel részletesebben foglalkoztunk volna még nem volt, de a Turing-gép elég egyszerűnek bizonyult ahhoz hogy előzetes tudás nélkül egy online eszköz használatával megírjam a programot.
+        </para>
+        <para>
+          Megéri belekezdeni egy olyan feladatba is amiről előzetesen semmit sem tudunk, mert lehet könnyen megérthető és egyszerűbb, mint gondolnánk. Előre eléggé szkeptikus voltam de kicsi áskálás után már világossá és könyuvé vállt.
+          
+          A tanulást sok online eszköz is elősegíti. Én ezt az állapotátmenet-gráfot a <link xlink:href="https://turingmachine.io/">turingmachine.io</link> segítségével írtam, ami egy egyszerű basic-szerű scriptnyelvből tud turing-gépeket generálni és szép grafikákat is csinálni hozzá.
+        </para>        
     </section>        
-        
     <section>
         <title>Az a<superscript>n</superscript>b<superscript>n</superscript>c<superscript>n</superscript> nyelv nem környezetfüggetlen</title>
         <para>
@@ -32,7 +110,37 @@
         <para>
             Megoldás forrása:                
         </para>
-        <para>
+        <programlisting>
+          <![CDATA[
+			  1.		S  	→   a	B	C
+			  2.		S	→	a	S	B	C
+			  3.	C	B	→	C	Z
+			  4.	C	Z	→	W	Z
+			  5.	W	Z	→	W	C
+			  6.	W	C	→	B	C
+			  7.	a	B	→	a	b
+			  8.	b	B	→	b	b	
+			  9.	b	C	→	b	c
+			  10.	c	C	→	c	c
+			  ]]>
+        </programlisting>
+        <programlisting>
+          <![CDATA[
+			  1.		S  	→   a	B	C
+			  2.		S	→	a	S	B	C
+			  3.	C	B	→	C	Z
+			  4.	C	Z	→	W	Z
+			  5.	W	Z	→	W	C
+			  6.	W	C	→	B	C
+			  7.	a	B	→	a	b
+			  8.	b	B	→	b	b	
+			  9.	b	C	→	b	c
+			  10.	c	C	→	c	c
+			  11.		S	→	S
+			  ]]>
+      </programlisting>
+
+      <para>
             Tanulságok, tapasztalatok, magyarázat...
         </para>
     </section>        
@@ -53,6 +161,61 @@
         <para>
             Tanulságok, tapasztalatok, magyarázat...
         </para>
+      <programlisting>
+        <![CDATA[
+<utasítás>	::=	<címkézett> | <kifejezés> | <összetett> | <kiválasztó> | <iterációs> | <vezértlésátadó>
+
+<címkézett>	::=	azonosító : <utasítás>
+				        case <állandó_kif> : <utasítás>
+				        default : <utasítás>
+
+<kifejezés>	::=	<kifejezés_kif> ;
+
+<összetett>	::=	{deklarációs_lista utasítás_lista}
+	
+	<deklarációs_lista>	::=	deklaráció
+							            deklarációs_lista deklaráció
+	<utasítás_lista>	::=	utasítás
+							          utasítás_lista utasítás
+
+<kiválasztó>	::=	if ( <kifejezés_kif> ) <utasítás>
+					        if ( <kifejezés_kif> ) <utasítás> else <utasítás>
+					        switch ( kifeje
+					        zés_kif ) <utasítás>
+
+<iterációs>	::=	while ( <kifejezés_kif> ) <utasítás>
+				        do  <utasítás> while ( <kifejezés_kif> ) ;
+				        for (<kifejezés_kif> ; <kifejezés_kif> ; <kifejezés_kif> ) <utasítás>
+
+<vezérlésátadó>	::=	goto <azonosító> ;
+					          continue ;
+					          break ;
+					          return <kifejezés_kif> ;
+]]>
+      </programlisting>
+
+      <para>
+        Valamint a C kód:
+      </para>
+      <programlisting language="c">
+        <![CDATA[
+#include "stdio.h"
+
+int main()
+{
+	//c99+
+	for (int i = 0; i<5; i++)
+	{
+		long long int a = 5;
+	}
+
+	char* a;
+
+	//c11-
+	gets(a);
+
+	return 0;}]]>
+      </programlisting>
     </section>                     
 
     <section>
@@ -70,26 +233,43 @@
                 <filename>bhax/thematic_tutorials/bhax_textbook_IgyNeveldaProgramozod/Chomsky/realnumber.l</filename>
             </link> 
         </para>
-        <programlisting language="c"><![CDATA[%{
-#include <stdio.h>
-int realnumbers = 0;
-%}
-digit	[0-9]
-%%
-{digit}*(\.{digit}+)?	{++realnumbers; 
-    printf("[realnum=%s %f]", yytext, atof(yytext));}
-%%
-int
-main ()
-{
- yylex ();
- printf("The number of real numbers is %d\n", realnumbers);
- return 0;
-}
-]]></programlisting>
-        <para>
-            Tanulságok, tapasztalatok, magyarázat...
-        </para>
+      <programlisting>
+        <![CDATA[Imports System.Console
+			Imports System.Text.RegularExpressions
+			
+			Module MLexer
+				Sub ChomskyLexer()
+					Do
+						Dim be As String = ReadLine()
+						Dim pattern As String = "[0-9]*(\.[0-9]+)?"
+						Dim realnums As Integer = 0
+			
+						be = Regex.Replace(be, pattern, Function(match As Match)
+															If match.Length > 0 Then
+																realnums += 1
+																Return "<real num: " + Convert.ToSingle(match.Value).ToString() + ">" + vbNewLine
+															End If
+															Return match.Value
+														End Function)
+			
+						WriteLine(be)
+						WriteLine(realnums)
+					Loop
+				End Sub
+			End Module
+			]]>
+      </programlisting>
+      <para>
+        A regex alkalmazása különböző dolgok parseolására. A lexerek definíciója és szerepe a programozásban. A VB regex integrációja.
+        Az emberi nyelv szintaktikájának nem-matematikaisága, nem szabályossága.
+        Például: mi a valós szám?
+        -Kell a tizedesvessző előtt szám vagy nem?
+        -Tizedes vessző vagy pont?
+        -Tagolás ezresével?
+        -Ezrenkénti tagolás szóközzel vagy más jellel?
+        -Exponenciális reprezentáció?
+        Mivel működnek a különböző programnyelveket lintelő és parseoló programok, algoritmusok.
+      </para>
     </section>                     
 
     <section>
@@ -227,38 +407,59 @@ main()
         </caution>
             
         <orderedlist numeration="lowerroman">
-            <listitem>                                    
-                <programlisting><![CDATA[if(signal(SIGINT, SIG_IGN)!=SIG_IGN)
-    signal(SIGINT, jelkezelo);]]></programlisting>
+          <listitem>
+            <programlisting><![CDATA[for(i=0; i<5; ++i)]]></programlisting>
+            <para>
+              Először i-t 0-val tesszük egyenlővé. Ezután megnézzük, hogy i kisebb-e mint 5.
+              Ha igen, akkor lefuttatjuk a body-t majd inkrementáljuk i-t.
+              Ha nem, akkor tovább haladunk a következő utasításhoz
+            </para>
+          </listitem>
+          <listitem>
+            <programlisting><![CDATA[for(i=0; i<5; i++)]]></programlisting>
+            <para>
+              Először i-t 0-val tesszük egyenlővé. Ezután megnézzük, hogy i kisebb-e mint 5.
+              Ha igen, akkor lefuttatjuk a body-t majd inkrementáljuk i-t.
+              Ha nem, akkor tovább haladunk a következő utasításhoz
+            </para>
+            <para>
+              A post-vagy pre-inkrementálás különbsége itt teljesen mindegy, mivel nem használjuk a visszadott értéket és a tévhittel ellenben ugyanannyi instrukciót generál (ugyanolyan "gyors") mindkettő.
+            </para>
+          </listitem>
+            <listitem>
+              <programlisting><![CDATA[for(i=0; i<5; tomb[i] = i++)]]></programlisting>
+              <para>
+                Először i-t 0-val tesszük egyenlővé. Ezután megnézzük, hogy i kisebb-e mint 5.
+                Ha igen, akkor lefuttatjuk a body-t majd a tomb[i]-t egyenlővé tesszük i-vel, ezután inkrementáljuk i-t.
+                Ha nem, akkor tovább haladunk a következő utasításhoz
+              </para>
             </listitem>
-            <listitem>                                    
-                <programlisting><![CDATA[for(i=0; i<5; ++i)]]></programlisting>            
+            <listitem>
+              <programlisting><![CDATA[for(i=0; i<n && (*d++ = *s++); ++i)]]></programlisting>
+              <para>
+                s-ből d-be n elemet másol.
+              </para>
             </listitem>
-            <listitem>                                    
-
-                <programlisting><![CDATA[for(i=0; i<5; i++)]]></programlisting>            
+            <listitem>
+              <programlisting><![CDATA[printf("%d %d", f(a, ++a), f(++a, a));]]></programlisting>
+              <para>
+                Unspecified behaviour. (Mert a függvényargumentumok kiértékelési sorrendje nincs meghatározva.)
+                Természetes nyelven: Mindhárom függvényhívás kiértékelődik, de nem tudjuk milyen sorrendben értékelődnek ki az argumentumok.
+              </para>
             </listitem>
-            <listitem>                                    
-
-                <programlisting><![CDATA[for(i=0; i<5; tomb[i] = i++)]]></programlisting>            
+            <listitem>
+              <programlisting><![CDATA[printf("%d %d", f(a), a);]]></programlisting>
+              <para>
+                Kiírja az f(a)-t integerként és az a-t integerként. Itt azért nincs baj mert a-t másoljuk mikor meghívjuk f-et, tehát a eredeti értéke nem változik.
+              </para>
             </listitem>
-            <listitem>                                    
-
-                <programlisting><![CDATA[for(i=0; i<n && (*d++ = *s++); ++i)]]></programlisting>            
+            <listitem>
+              <programlisting><![CDATA[printf("%d %d", f(&a), a);]]></programlisting>
+              <para>
+                Ha a-t módosítjuk f-ben akkor mivel nincs meghatározva a kiértékelési sorrend, ezért az a lehet a módosítatlan a is vagy a módosított is.
+              </para>
             </listitem>
-            <listitem>                                    
-
-                <programlisting><![CDATA[printf("%d %d", f(a, ++a), f(++a, a));]]></programlisting>            
-            </listitem>
-            <listitem>                                    
-
-                <programlisting><![CDATA[printf("%d %d", f(a), a);]]></programlisting>            
-            </listitem>
-            <listitem>                                    
-
-                <programlisting><![CDATA[printf("%d %d", f(&a), a);]]></programlisting>            
-            </listitem>
-        </orderedlist>
+          </orderedlist>
         <para>
             Megoldás forrása:  
         </para>
@@ -268,7 +469,9 @@ main()
         </para>
 
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+          Egy kis gyakorlás C ből. Valamint, hogy legyen fogalmunk mi mit csinál és hogyan. Megtudtam milyen jó dolgunk van manapság a c++ auto-val,
+          ami kitalálja helyettünk a típust, valamint a template-ekkel amik segítségével nem is kell foglalkoznunk a funkciók pontos definíciójával.
+          
         </para>
 
     </section>                     
@@ -295,7 +498,8 @@ $(\exists y \forall x (y<x) \supset \neg (x \text{ prím}))$
         </para>
 
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+          Tanulságok, tapasztalatok, magyarázat...
+          First things first: Ragd be LAETX-be 
         </para>
     </section>                                                                                                                                                                            
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
@@ -305,79 +509,139 @@ $(\exists y \forall x (y<x) \supset \neg (x \text{ prím}))$
         <para>
             Vezesd be egy programba (forduljon le) a következőket: 
         </para>
+      <itemizedlist>
+        <listitem>
+          <para>egész</para>
+          <para>
+            decltype(2) a
+          </para>
+        </listitem>
+        <listitem>
+          <para>egészre mutató mutató</para>
+          <para>
+            <![CDATA[ std::add_pointer_t<std::add_pointer_t<decltype(3)>> a]]>
+          </para>
+        </listitem>
+        <listitem>
+          <para>egész referenciája</para>
+          <para>
+            <![CDATA[ std::add_lvalue_reference_t<decltype(4)> a]]>
+          </para>
+        </listitem>
+        <listitem>
+          <para>egészek tömbje</para>
+          <para>
+            int a[5];
+          </para>
+        </listitem>
+        <listitem>
+          <para>egészek tömbjének referenciája (nem az első elemé)</para>
+          <para>
+            <![CDATA[ int (&a)[64];]]>
+          </para>
+        </listitem>
+        <listitem>
+          <para>egészre mutató mutatók tömbje</para>
+          <para>
+            int *a[64];
+          </para>
+        </listitem>
+        <listitem>
+          <para>egészre mutató mutatót visszaadó függvény</para>
+          <para>
+            int* f();
+          </para>
+        </listitem>
+        <listitem>
+          <para>egészre mutató mutatót visszaadó függvényre mutató mutató</para>
+          <para>
+            int* (*fn)();
+          </para>
+        </listitem>
+        <listitem>
+          <para>egészet visszaadó és két egészet kapó függvényre mutató mutatót visszaadó, egészet kapó függvény</para>
+          <para>
+            int (*fn(int))(int, int)
+          </para>
+        </listitem>
+        <listitem>
+          <para>függvénymutató egy egészet visszaadó és két egészet kapó függvényre mutató mutatót visszaadó, egészet kapó függvényre</para>
+          <para>
+            int (*(*fn)(int))(int, int)
+          </para>
+        </listitem>
+      </itemizedlist>
 
-        <itemizedlist>
-            <listitem>
-                <para>egész</para>                        
-            </listitem>
-            <listitem>
-                <para>egészre mutató mutató</para>                        
-            </listitem>
-            <listitem>
-                <para>egész referenciája</para>                        
-            </listitem>
-            <listitem>
-                <para>egészek tömbje</para>                        
-            </listitem>
-            <listitem>
-                <para>egészek tömbjének referenciája (nem az első elemé)</para>                        
-            </listitem>
-            <listitem>
-                <para>egészre mutató mutatók tömbje</para>                        
-            </listitem>
-            <listitem>
-                <para>egészre mutató mutatót visszaadó függvény</para>                        
-            </listitem>
-            <listitem>
-                <para>egészre mutató mutatót visszaadó függvényre mutató mutató</para>                        
-            </listitem>
-            <listitem>
-                <para>egészet visszaadó és két egészet kapó függvényre mutató mutatót visszaadó, egészet kapó függvény</para>                        
-            </listitem>            
-            <listitem>
-                <para>függvénymutató egy egészet visszaadó és két egészet kapó függvényre mutató mutatót visszaadó, egészet kapó függvényre</para>                        
-            </listitem>            
-        </itemizedlist>            
+      <para>
+        Mit vezetnek be a programba a következő nevek?
+      </para>
 
-        <para>
-            Mit vezetnek be a programba a következő nevek?
-        </para>
-
-        <itemizedlist>
-            <listitem>
-                <programlisting><![CDATA[int a;]]></programlisting>            
-            </listitem>
-            <listitem>
-                <programlisting><![CDATA[int *b = &a;]]></programlisting>            
-            </listitem>
-            <listitem>
-                <programlisting><![CDATA[int &r = a;]]></programlisting>            
-            </listitem>
-            <listitem>
-                <programlisting><![CDATA[int c[5];]]></programlisting>            
-            </listitem>
-            <listitem>
-                <programlisting><![CDATA[int (&tr)[5] = c;]]></programlisting>            
-            </listitem>
-            <listitem>
-                <programlisting><![CDATA[int *d[5];]]></programlisting>            
-            </listitem>
-            <listitem>
-                <programlisting><![CDATA[int *h ();]]></programlisting>            
-            </listitem>
-            <listitem>
-                <programlisting><![CDATA[int *(*l) ();]]></programlisting>            
-            </listitem>
-            <listitem>
-                <programlisting><![CDATA[int (*v (int c)) (int a, int b)]]></programlisting>            
-            </listitem>            
-            <listitem>
-                <programlisting><![CDATA[int (*(*z) (int)) (int, int);]]></programlisting>            
-            </listitem>            
-        </itemizedlist>       
+      <itemizedlist>
+        <listitem>
+          <programlisting><![CDATA[int a;]]></programlisting>
+          <para>
+            egy egész
+          </para>
+        </listitem>
+        <listitem>
+          <programlisting><![CDATA[int *b = &a;]]></programlisting>
+          <para>
+            egész pointer
+          </para>
+        </listitem>
+        <listitem>
+          <programlisting><![CDATA[int &r = a;]]></programlisting>
+          <para>
+            egész referencia
+          </para>
+        </listitem>
+        <listitem>
+          <programlisting><![CDATA[int c[5];]]></programlisting>
+          <para>
+            egy egész tömb
+          </para>
+        </listitem>
+        <listitem>
+          <programlisting><![CDATA[int (&tr)[5] = c;]]></programlisting>
+          <para>
+            egy egész tömb referencia
+          </para>
+        </listitem>
+        <listitem>
+          <programlisting><![CDATA[int *d[5];]]></programlisting>
+          <para>
+            egész pointerek tömbje
+          </para>
+        </listitem>
+        <listitem>
+          <programlisting><![CDATA[int *h ();]]></programlisting>
+          <para>
+            funkció ami egész pointert ad vissza
+          </para>
+        </listitem>
+        <listitem>
+          <programlisting><![CDATA[int *(*l) ();]]></programlisting>
+          <para>
+            funkcióra mutató pointer ami egész pointert ad vissza
+          </para>
+        </listitem>
+        <listitem>
+          <programlisting><![CDATA[int (*v (int c)) (int a, int b)]]></programlisting>
+          <para>
+            egy egészet kérő funkció ami egy pointert ad vissza egy funkcióra ami két egészet kér és egy egészet ad vissza
+          </para>
+        </listitem>
+        <listitem>
+          <programlisting><![CDATA[int (*(*z) (int)) (int, int);]]></programlisting>
+          <para>
+            egy egészet kérő funkcióra mutató pointer ami egy pointert ad vissza egy funkcióra ami két egészet kér és egy egészet ad vissza
+          </para>
+        </listitem>
+      </itemizedlist>
 
 
-        <para>
+
+      <para>
             Megoldás videó: 
         </para>
         <para>
@@ -480,7 +744,9 @@ main ()
 }
 ]]></programlisting>            
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+            Nagyon nehéz a functio-pontier-functio.... esatobbi deklarálása amikor iylen sokszor kell alkalmazni.
+            Az a jó, hogy sokszor viszont nem kell alkalmazni ezt a módszert mert vagy túlbonyolítaná a dolgokat, vagy mert teljesen felesleges. Olvasni meg megérteni pláne a legnehezebb
+            ezért ez a módszer kerülendő.
         </para>
     </section>                     
 

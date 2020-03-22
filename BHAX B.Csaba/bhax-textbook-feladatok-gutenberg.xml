@@ -1,34 +1,112 @@
 <chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
-    <info>
-        <title>Helló, Gutenberg!</title>
-        <keywordset>
-            <keyword/>
-        </keywordset>
-        <cover>
-            <para>
-                Programozás tankönyvek rövid olvasónaplói.
-            </para>
-        </cover>
-    </info>
-    <section>
-        <title>Programozási alapfogalmak</title>
-        <para>         
-            <citation>PICI</citation>       
-        </para>
-    </section>        
-    <section>
-        <title>Programozás bevezetés</title>
-        <para>                
-            <citation>KERNIGHANRITCHIE</citation>
-        </para>
-        <para>
-            Megoldás videó: <link xlink:href="https://youtu.be/zmfT9miB-jY">https://youtu.be/zmfT9miB-jY</link>
-        </para>        
-    </section>        
-    <section>
-        <title>Programozás</title>
-        <para>                
-            <citation>BMECPP</citation>
-        </para>
-    </section>        
-</chapter>                
+  <info>
+    <title>Helló, Gutenberg!</title>
+    <keywordset>
+      <keyword/>
+    </keywordset>
+    <cover>
+      <para>
+        Programozás tankönyvek rövid olvasónaplói.
+      </para>
+    </cover>
+  </info>
+
+
+  <section>
+    <title>Programozási alapfogalmak</title>
+    <para>
+      <citation>PICI</citation>
+    </para>
+    <para>
+      1.2 Alapfogalmak
+    </para>
+    <para>
+      A számítógépes programozás három nyelvét különböztethetjük meg: gépi nyelv, assembly szintű nyelv,
+      vagy magas szintű nyelv. Egy magas szintű programnyelvet a szintaktikai és szemantikai szabályai
+      határoznak meg, és jelen kell lennie mindkettőnek. A szintaktika a formai szabályok, míg a szemtanika
+      a tartalmi, jelentésbeli szabályok együttese. Ahhoz, hogy egy magas szintű programozási nyelven megírt
+      programot le tudjunk futtatni, azt előbb le kell fordítani a processzor saját gépi nyelvére. Erre
+      kétféle lehetőségünk van, a fordítóprogramos és az interpreteres.
+    </para>
+    <para>
+      A fordítóprogram a magas szintű nyelvű forrásból egy gépi kódú tárgyprogramot kreál négy lépésben.
+      Lexikális elemzés, szintaktikai elemzés, szemantikai elemzés, majd kódgenerálás. Amennyiben az adott nyelv 
+      szabályai szerint szintaktikailag helyes, az elkészült tárgyprogramból a kapcsolatszerkesztő állít elő
+      egy már ténylegesen futtatható programot.
+    </para>
+    <para>
+      Az interpreteres megoldás esetén is megvan az első három lépés, de itt nem készül tárgyprogram. Helyette
+      utasításonként sorra veszi a forrásprogramot, értelmezi, majd végre is hajtja azt.
+    </para>
+    <para>
+      A programnyelvek lehetnek vagy fordítóprogramosak, vagy interpreteresek is, de lehetnek egyszerre mindkettő is.
+    </para>
+  </section>
+
+
+  <section>
+    <title>Programozás bevezetés</title>
+    <para>
+      <citation>KERNIGHANRITCHIE</citation>
+    </para>
+    <para>
+      Megoldás videó: <link xlink:href="https://youtu.be/zmfT9miB-jY">https://youtu.be/zmfT9miB-jY</link>
+    </para>
+    <para>
+      Alapismeretek
+    </para>
+    <para>
+      Az első fejezet, mint bevezetés, írat velünk egy egyszerű helloworld programot, ezzel megtanítva,
+      egyszersmint begyakoroltatva velünk az alapvető szintaktikát, valamint a fordítás és futtatás
+      mikéntjét. A továbbiakban új alapfogalmakat tanít, mint hogy a C-beli programok .c-re végződnek,
+      vagy épp hogy mi az a változó és milyen típusai vannak. Ezután találkozhatunk még olyan fontos
+      elemekkel, mint a ciklusok, feltételes elágazások, tömbök és függvények. Az olvasót végig arra
+      próbálják sarkallni, hogy minél többet gyakoroljon.
+    </para>
+    <para>
+      Típusok, operátorok és kifejezések
+    </para>
+    <para>
+      A második fejezetben olvashatunk bővebben a változókról, például a nevükhöz tartozó konvenciókról,
+      a típusokról és azok méreteiről. Bővebb szó esik az értékadásról, megjelennek a konstansok. Érdemben
+      tárgyal az aritmetikai, relációs és logikai operátorokról. Típuskonverziók.
+    </para>
+  </section>
+
+
+  <section>
+    <title>Programozás</title>
+    <para>
+      <citation>BMECPP</citation>
+    </para>
+    <para>
+      Ebben a kis olvasmányban megismerhettük a C++ és elődje, a C közötti néhány különbséget.
+      C-vel ellentétben C++-ban az üres paraméterlista <type>void</type> visszatérési értéket jelent.
+      Szintén lényeges különbséget jelent, hogy már nem kötelező a return használata, azt a fordítóprogram
+      automatikusan a végére teszi. C++-ban megjelent a <type>bool</type> típusú változó, ami logikai
+      igaz/hamis értékekkel dolgozik. Ebből kifolyólag a nyelv kulcsszavai részévé váltak a bool, true és
+      false kifejezések.
+    </para>
+  </section>
+
+
+  <section>
+    <title>Mobilprogramozás</title>
+    <para>
+      <citation>MOBIL</citation>
+    </para>
+    <para>
+      2.3. Python
+    </para>
+    <para>
+      A Python egy magas szintű, általános célú programozási nyelv melyet a szkriptnyelvek családjába szoktak sorolni.
+      A Pythonban megírt programokat általában valamilyen fejlesztői környezetben tudjuk futtatni. Egyik nagy előnye, hogy
+      rendelkezik egy rendkívül hasznos alapkönyvtárral, mely számos praktikus segítséget tartalmaz, ilyenek például
+      a szabványos kifejezések. Másik nagy előnye a bővíthetőség, C-ben vagy C++-ban írt programrészekkel is kompatibilis
+      tud lenni, így azokkal könnyen bővíteni lehet a kódot. Népszerűsége egyszerűségéből fakad. Fontos hátulütője viszont,
+      hogy a legtöbb mobil alapvetően nem rendelkezik Python-futtató-környezettel, így hiába egyszerűbb megírni egy
+      programot, nehezebb terjeszteni azt. Ha viszont egy mobil rendelkezik Python-futtató-környezettel, akkor lehetővé
+      teszi azt is, hogy mobilon programozzunk és teszteljünk is, bár előbbi nem ajánlott hosszabb programkódok esetén.
+    </para>
+  </section>
+</chapter>
