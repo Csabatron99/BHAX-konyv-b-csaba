@@ -39,23 +39,18 @@
 #include <iostream>
 #include "png++/png.hpp"
 #include <sys/times.h>
-
 #define MERET 600
 #define ITER_HAT 32000
-
 void
 mandel (int kepadat[MERET][MERET]) {
-
     //Mérünk időt (PP 64)
     clock_t delta = clock ();
     //Mérünk időt (PP 66)
     struct tms tmsbuf1, tmsbuf2;
     times (&tmsbuf1);
-
     // számítás adatai
     float a = -2.0, b = .7, c = -1.35, d = 1.35;
     int szelesseg = MERET, magassag = MERET, iteraciosHatar = ITER_HAT;
-
     // a számítás
     float dx = (b - a) / szelesseg;
     float dy = (d - c) / magassag;
@@ -90,7 +85,6 @@ mandel (int kepadat[MERET][MERET]) {
                 ujimZ = 2 * reZ * imZ + imC;
                 reZ = ujreZ;
                 imZ = ujimZ;
-
                 ++iteracio;
             }
             kepadat[j][k] = iteracio;
@@ -99,7 +93,6 @@ mandel (int kepadat[MERET][MERET]) {
     times (&tmsbuf2);
     std::cout << tmsbuf2.tms_utime - tmsbuf1.tms_utime
               + tmsbuf2.tms_stime - tmsbuf1.tms_stime << std::endl;
-
     delta = clock () - delta;
 	  std::cout << (float) delta / CLOCKS_PER_SEC << " sec" << std::endl;
 }
@@ -113,9 +106,7 @@ main (int argc, char *argv[])
     }
     int kepadat[MERET][MERET];
     mandel(kepadat);
-
     png::image < png::rgb_pixel > kep (MERET, MERET);
-
     for (int j = 0; j < MERET; ++j)
     {
         //sor = j;
@@ -133,7 +124,6 @@ main (int argc, char *argv[])
     kep.write (argv[1]);
     std::cout << argv[1] << " mentve" << std::endl;
 }
-
 ]]>
 </programlisting> 
 </para>
@@ -241,16 +231,12 @@ Ez a feladat olyan , mint az előző, néhány kissebb eltérés kivételével. 
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
-
 #include <iostream>
 #include "png++/png.hpp"
 #include <complex>
-
 int
 main ( int argc, char *argv[] )
 {
-
   int szelesseg = 1920;
   int magassag = 1080;
   int iteraciosHatar = 255;
@@ -258,7 +244,6 @@ main ( int argc, char *argv[] )
   double b = 0.7;
   double c = -1.3;
   double d = 1.3;
-
   if ( argc == 9 )
     {
       szelesseg = atoi ( argv[2] );
@@ -274,48 +259,36 @@ main ( int argc, char *argv[] )
       std::cout << "Hasznalat: ./3.1.2 fajlnev szelesseg magassag n a b c d" << std::endl;
       return -1;
     }
-
   png::image < png::rgb_pixel > kep ( szelesseg, magassag );
-
   double dx = ( b - a ) / szelesseg;
   double dy = ( d - c ) / magassag;
   double reC, imC, reZ, imZ;
   int iteracio = 0;
-
   std::cout << "Szamitas\n";
   // j megy a sorokon
   for ( int j = 0; j < magassag; ++j )
     {
       // k megy az oszlopokon
-
       for ( int k = 0; k < szelesseg; ++k )
         {
-
           // c = (reC, imC) a halo racspontjainak
           // megfelelo komplex szam
-
           reC = a + k * dx;
           imC = d - j * dy;
           std::complex<double> c ( reC, imC );
-
           std::complex<double> z_n ( 0, 0 );
           iteracio = 0;
-
           while ( std::abs ( z_n ) < 4 && iteracio < iteraciosHatar )
             {
               z_n = z_n * z_n + c;
-
               ++iteracio;
             }
-
           kep.set_pixel ( k, j,
                           png::rgb_pixel ( iteracio%255, (iteracio*iteracio)%255, 0 ) );
         }
-
       int szazalek = ( double ) j / ( double ) magassag * 100.0;
       std::cout << "\r" << szazalek << "%" << std::flush;
     }
-
   kep.write ( argv[1] );
   std::cout << "\r" << argv[1] << " mentve." << std::endl;
 }
@@ -346,21 +319,16 @@ main ( int argc, char *argv[] )
     {
       for ( int k = 0; k < szelesseg; ++k )
         {
-
           // c = (reC, imC) a halo racspontjainak
           // megfelelo komplex szam
-
           reC = a + k * dx;
           imC = d - j * dy;
           std::complex<double> c ( reC, imC );
-
           std::complex<double> z_n ( 0, 0 );
           iteracio = 0;
-
           while ( std::abs ( z_n ) < 4 && iteracio < iteraciosHatar )
             {
               z_n = z_n * z_n + c;
-
               ++iteracio;
             }
 ]]>
@@ -379,7 +347,6 @@ main ( int argc, char *argv[] )
             double reZ = a + k * dx;
             double imZ = d - j * dy;
             std::complex<double> z_n ( reZ, imZ );
-
             int iteracio = 0;
             for (int i=0; i < iteraciosHatar; ++i)
             {
@@ -431,15 +398,12 @@ main ( int argc, char *argv[] )
 // https://youtu.be/IJMbgRzY76E
 // See also https://www.emis.de/journals/TJNSA/includes/files/articles/Vol9_Iss5_2305--2315_Biomorphs_via_modified_iterations.pdf
 //
-
 #include <iostream>
 #include "png++/png.hpp"
 #include <complex>
-
 int
 main ( int argc, char *argv[] )
 {
-
     int szelesseg = 1920;
     int magassag = 1080;
     int iteraciosHatar = 255;
@@ -449,7 +413,6 @@ main ( int argc, char *argv[] )
     double ymax = 1.3;
     double reC = .285, imC = 0;
     double R = 10.0;
-
     if ( argc == 12 )
     {
         szelesseg = atoi ( argv[2] );
@@ -462,39 +425,29 @@ main ( int argc, char *argv[] )
         reC = atof ( argv[9] );
         imC = atof ( argv[10] );
         R = atof ( argv[11] );
-
     }
     else
     {
         std::cout << "Hasznalat: ./3.1.2 fajlnev szelesseg magassag n a b c d reC imC R" << std::endl;
         return -1;
     }
-
     png::image < png::rgb_pixel > kep ( szelesseg, magassag );
-
     double dx = ( xmax - xmin ) / szelesseg;
     double dy = ( ymax - ymin ) / magassag;
-
     std::complex<double> cc ( reC, imC );
-
     std::cout << "Szamitas\n";
-
     // j megy a sorokon
     for ( int y = 0; y < magassag; ++y )
     {
         // k megy az oszlopokon
-
         for ( int x = 0; x < szelesseg; ++x )
         {
-
             double reZ = xmin + x * dx;
             double imZ = ymax - y * dy;
             std::complex<double> z_n ( reZ, imZ );
-
             int iteracio = 0;
             for (int i=0; i < iteraciosHatar; ++i)
             {
-
                 z_n = std::pow(z_n, 3) + cc;
                 //z_n = std::pow(z_n, 2) + std::sin(z_n) + cc;
                 if(std::real ( z_n ) > R || std::imag ( z_n ) > R)
@@ -503,18 +456,14 @@ main ( int argc, char *argv[] )
                     break;
                 }
             }
-
             kep.set_pixel ( x, y,
                             png::rgb_pixel ( (iteracio*20)%255, (iteracio*40)%255, (iteracio*60)%255 ));
         }
-
         int szazalek = ( double ) y / ( double ) magassag * 100.0;
         std::cout << "\r" << szazalek << "%" << std::flush;
     }
-
     kep.write ( argv[1] );
     std::cout << "\r" << argv[1] << " mentve." << std::endl;
-
 }
 ]]>
         </programlisting>                                 
@@ -541,22 +490,18 @@ Kezdetnek deviniáljuk a méretet(600) és az iterációs határt(32000), majd m
 #include <png++/rgb_pixel.hpp>
 #include <sys/times.h>
 #include <iostream>
-
 #define MERET 600
 #define ITER_HAT 32000
-
 __device__ int
 mandel (int k, int j)
 {
   float a = -2.0, b = .7, c = -1.35, d = 1.35;
   int szelesseg = MERET, magassag = MERET, iteraciosHatar = ITER_HAT;
-
   float dx = (b - a) / szelesseg;
   float dy = (d - c) / magassag;
   float reC, imC, reZ, imZ, ujreZ, ujimZ;
   
   int iteracio = 0;
-
   reC = a + k * dx;
   imC = d - j * dy;
   
@@ -570,7 +515,6 @@ mandel (int k, int j)
       ujimZ = 2 * reZ * imZ + imC;
       reZ = ujreZ;
       imZ = ujimZ;
-
       ++iteracio;
     }
   return iteracio;
@@ -586,13 +530,10 @@ mandelkernel (int *kepadat)
 {
   int tj = threadIdx.x;
   int tk = threadIdx.y;
-
   int j = blockIdx.x * 10 + tj;
   int k = blockIdx.y * 10 + tk;
-
   kepadat[j + k * MERET] = mandel (j, k);
 }
-
 void
 cudamandel (int kepadat[MERET][MERET])
 {
@@ -607,26 +548,20 @@ cudamandel (int kepadat[MERET][MERET])
 	      MERET * MERET * sizeof (int), cudaMemcpyDeviceToHost);
   cudaFree (device_kepadat);
 }
-
 int
 main (int argc, char *argv[])
 {
   clock_t delta = clock ();
   struct tms tmsbuf1, tmsbuf2;
   times (&tmsbuf1);
-
   if (argc != 2)
     {
       std::cout << "Hasznalat: ./mandelpngc fajlnev";
       return -1;
     }
-
   int kepadat[MERET][MERET];
-
   cudamandel (kepadat);
-
   png::image < png::rgb_pixel > kep (MERET, MERET);
-
   for (int j = 0; j < MERET; ++j)
     {
       for (int k = 0; k < MERET; ++k)
@@ -641,13 +576,10 @@ main (int argc, char *argv[])
 	}
     }
   kep.write (argv[1]);
-
   std::cout << argv[1] << " mentve" << std::endl;
-
   times (&tmsbuf2);
   std::cout << tmsbuf2.tms_utime - tmsbuf1.tms_utime
     + tmsbuf2.tms_stime - tmsbuf1.tms_stime << std::endl;
-
   delta = clock () - delta;
   std::cout << (float) delta / CLOCKS_PER_SEC << " sec" << std::endl;
 }]]>
@@ -678,16 +610,12 @@ frak.pro - Ennek a fájlnak a feladata lesz az összes kódot összeszedni, és 
 ######################################################################
 # Automatically generated by qmake (3.0) Thu Apr 10 11:36:01 2014
 ######################################################################
-
 TEMPLATE = app
 TARGET = frak
 INCLUDEPATH += .
-
 DEFINES += QT_DEPREACTED_WARNINGS
-
 #include <QtWidgets>
 QT += widgets
-
 # Input
 HEADERS += frakablak.h frakszal.h
 SOURCES += frakablak.cpp frakszal.cpp main.cpp
@@ -698,14 +626,12 @@ Az egésznek van egy main fájlja is , ami a következő
 <programlisting language="c++"><![CDATA[
 #include <QApplication>
 #include "frakablak.h"
-
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
    
     FrakAblak w1;
     w1.show();
-
     
     return a.exec();
 }
@@ -759,15 +685,12 @@ frakablak.cpp
 // egy sajtot a Javt tantokhoz rt dallamra:
 // http://www.tankonyvtar.hu/informatika/javat-tanitok-2-2-080904-1
 //
-
 #include "frakablak.h"
-
 FrakAblak::FrakAblak(double a, double b, double c, double d,
                      int szelesseg, int iteraciosHatar, QWidget *parent)
                          : QMainWindow(parent)
 {
     setWindowTitle("Mandelbrot halmaz");
-
     szamitasFut = true;
     x = y = mx = my = 0;
     this->a = a;
@@ -777,95 +700,69 @@ FrakAblak::FrakAblak(double a, double b, double c, double d,
     this->szelesseg = szelesseg;
     this->iteraciosHatar = iteraciosHatar;
     magassag = (int)(szelesseg * ((d-c)/(b-a)));
-
     setFixedSize(QSize(szelesseg, magassag));
     fraktal= new QImage(szelesseg, magassag, QImage::Format_RGB32);
-
     mandelbrot = new FrakSzal(a, b, c, d, szelesseg, magassag, iteraciosHatar, this);
     mandelbrot->start();
 }
-
 FrakAblak::~FrakAblak()
 {
     delete fraktal;
     delete mandelbrot;
 }
-
 void FrakAblak::paintEvent(QPaintEvent*) {
     QPainter qpainter(this);
     qpainter.drawImage(0, 0, *fraktal);
     if(!szamitasFut) {
         qpainter.setPen(QPen(Qt::white, 1));
         qpainter.drawRect(x, y, mx, my);
-
     }
     qpainter.end();
 }
-
 void FrakAblak::mousePressEvent(QMouseEvent* event) {
-
     // A nagytand kijellt terletet bal fels sarka:
     x = event->x();
     y = event->y();
     mx = 0;
     my = 0;
-
     update();
 }
-
 void FrakAblak::mouseMoveEvent(QMouseEvent* event) {
-
     // A nagytand kijellt terlet szlessge s magassga:
     mx = event->x() - x;
     my = mx; // ngyzet alak
-
     update();
 }
-
 void FrakAblak::mouseReleaseEvent(QMouseEvent* event) {
-
     if(szamitasFut)
         return;
-
     szamitasFut = true;
-
     double dx = (b-a)/szelesseg;
     double dy = (d-c)/magassag;
-
     double a = this->a+x*dx;
     double b = this->a+x*dx+mx*dx;
     double c = this->d-y*dy-my*dy;
     double d = this->d-y*dy;
-
     this->a = a;
     this->b = b;
     this->c = c;
     this->d = d;
-
     delete mandelbrot;
     mandelbrot = new FrakSzal(a, b, c, d, szelesseg, magassag, iteraciosHatar, this);
     mandelbrot->start();
-
     update();
 }
-
 void FrakAblak::keyPressEvent(QKeyEvent *event)
 {
-
     if(szamitasFut)
         return;
-
     if (event->key() == Qt::Key_N)
         iteraciosHatar *= 2;
     szamitasFut = true;
-
     delete mandelbrot;
     mandelbrot = new FrakSzal(a, b, c, d, szelesseg, magassag, iteraciosHatar, this);
     mandelbrot->start();
-
 }
-
-
 void FrakAblak::vissza(int magassag, int *sor, int meret)
 {
     for(int i=0; i<meret; ++i) {
@@ -874,7 +771,6 @@ void FrakAblak::vissza(int magassag, int *sor, int meret)
     }
     update();
 }
-
 void FrakAblak::vissza(void)
 {
     szamitasFut = false;
@@ -887,7 +783,6 @@ frakszal.cpp
 </para>
 <programlisting language="c++"><![CDATA[
 #include "frakszal.h"
-
 FrakSzal::FrakSzal(double a, double b, double c, double d,
                    int szelesseg, int magassag, int iteraciosHatar, FrakAblak *frakAblak)
 {
@@ -899,15 +794,12 @@ FrakSzal::FrakSzal(double a, double b, double c, double d,
     this->iteraciosHatar = iteraciosHatar;
     this->frakAblak = frakAblak;
     this->magassag = magassag;
-
     egySor = new int[szelesseg];
 }
-
 FrakSzal::~FrakSzal()
 {
     delete[] egySor;
 }
-
 // A szál kódját a Javát tanítokhoz írt Java kódomból vettem át
 // http://www.tankonyvtar.hu/informatika/javat-tanitok-2-2-080904-1
 // mivel itt az algoritmust is leírtam/lerajzoltam, így meghagytam
@@ -947,15 +839,11 @@ void FrakSzal::run()
 	    /*
             while(reZ*reZ + imZ*imZ < 4 && iteracio < iteraciosHatar) {
                 // z_{n+1} = z_n * z_n + c
-
 	      ujreZ = reZ*reZ+ std::atan(reZ*reZ - imZ*imZ) + std::sqrt(reC);
 	      ujimZ = 2*reZ*imZ+std::atan(2*reZ*imZ) + imC;
-
                 reZ = ujreZ;
                 imZ = ujimZ;
-
                 ++iteracio;
-
             }
             */
 	    while( std::abs(z_n) < 4 && iteracio < iteraciosHatar) {
@@ -970,9 +858,7 @@ void FrakSzal::run()
             // sorozat konvergens, azaz iteráció = iterációsHatár
             // ekkor az iteráció %= 256 egyenlő 255, mert az esetleges
             // nagyítasok során az iteráció = valahány * 256 + 255
-
             iteracio %= 256;
-
             //a színezést viszont már majd a FrakAblak osztályban lesz
             egySor[k] = iteracio;
         }
@@ -980,7 +866,6 @@ void FrakSzal::run()
         frakAblak->vissza(j, egySor, szelesseg);
     }
     frakAblak->vissza();
-
 }
 ]]></programlisting>
 
@@ -990,20 +875,16 @@ void FrakSzal::run()
 <programlisting language="c++"><![CDATA[
 #ifndef FRAKABLAK_H
 #define FRAKABLAK_H
-
 #include <QMainWindow>
 #include <QImage>
 #include <QPainter>
 #include <QMouseEvent>
 #include <QKeyEvent>
 #include "frakszal.h"
-
 class FrakSzal;
-
 class FrakAblak : public QMainWindow
 {
     Q_OBJECT
-
 public:
     FrakAblak(double a = -2.0, double b = .7, double c = -1.35,
               double d = 1.35, int szelesseg = 600,
@@ -1019,14 +900,12 @@ public:
     // Max. hny lpsig vizsgljuk a z_{n+1} = z_n * z_n + c itercit?
     // (tk. most a nagytsi pontossg)
     int iteraciosHatar;
-
 protected:
     void paintEvent(QPaintEvent*);
     void mousePressEvent(QMouseEvent*);
     void mouseMoveEvent(QMouseEvent*);
     void mouseReleaseEvent(QMouseEvent*);
     void keyPressEvent(QKeyEvent*);
-
 private:
     QImage* fraktal;
     FrakSzal* mandelbrot;
@@ -1036,10 +915,7 @@ private:
     // A nagytand kijellt terlet szlessge s magassga.
     int mx, my;
 };
-
 #endif // FRAKABLAK_H
-
-
 ]]></programlisting>
 <para>
 frakablak.h
@@ -1047,20 +923,16 @@ frakablak.h
 <programlisting language="c++"><![CDATA[
 #ifndef FRAKABLAK_H
 #define FRAKABLAK_H
-
 #include <QMainWindow>
 #include <QImage>
 #include <QPainter>
 #include <QMouseEvent>
 #include <QKeyEvent>
 #include "frakszal.h"
-
 class FrakSzal;
-
 class FrakAblak : public QMainWindow
 {
     Q_OBJECT
-
 public:
     FrakAblak(double a = -2.0, double b = .7, double c = -1.35,
               double d = 1.35, int szelesseg = 600,
@@ -1076,14 +948,12 @@ public:
     // Max. hny lpsig vizsgljuk a z_{n+1} = z_n * z_n + c itercit?
     // (tk. most a nagytsi pontossg)
     int iteraciosHatar;
-
 protected:
     void paintEvent(QPaintEvent*);
     void mousePressEvent(QMouseEvent*);
     void mouseMoveEvent(QMouseEvent*);
     void mouseReleaseEvent(QMouseEvent*);
     void keyPressEvent(QKeyEvent*);
-
 private:
     QImage* fraktal;
     FrakSzal* mandelbrot;
@@ -1093,9 +963,7 @@ private:
     // A nagytand kijellt terlet szlessge s magassga.
     int mx, my;
 };
-
 #endif // FRAKABLAK_H
-
 ]]></programlisting>
 <para>
 frakszal.h
@@ -1103,24 +971,19 @@ frakszal.h
 <programlisting language="c++"><![CDATA[
 #ifndef FRAKSZAL_H
 #define FRAKSZAL_H
-
 #include <QThread>
 #include <cmath>
 #include <complex>
 #include "frakablak.h"
-
 class FrakAblak;
-
 class FrakSzal : public QThread
 {
     Q_OBJECT
-
 public:
     FrakSzal(double a, double b, double c, double d,
              int szelesseg, int magassag, int iteraciosHatar, FrakAblak *frakAblak);
     ~FrakSzal();
     void run();
-
 protected:
     // A komplex sík vizsgált tartománya [a,b]x[c,d].
     double a, b, c, d;
@@ -1134,11 +997,8 @@ protected:
     FrakAblak* frakAblak;
     // Soronként küldöm is neki vissza a kiszámoltakat.
     int* egySor;
-
 };
-
 #endif // FRAKSZAL_H
-
 ]]></programlisting>
     </section>                     
                                                                                                                                                                             
@@ -1357,7 +1217,6 @@ Ezek állítása történik az eseménykezelő egérkattintást feldolgozó mous
                 my = 0;
                 repaint();
             }   
-
 ]]>
         </programlisting>
 <para>
@@ -1408,4 +1267,4 @@ Ha úgy érezzük, hogy a nagyítások során leromlott a pontosság, akkor az n
 ]]>
         </programlisting>
     </section>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
-</chapter>   
+</chapter>
