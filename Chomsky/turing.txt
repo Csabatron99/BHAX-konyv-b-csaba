@@ -1,0 +1,52 @@
+#https://turingmachine.io/
+input: '12'
+blank: ' '
+start state: GoRight
+table:
+  # scan to the rightmost digit
+  GoRight:
+    [0,1,2,3,4,5,6,7,8,9]: R
+    ' '  : {L: Decrease}
+    
+  Decrease:
+    ' ': {R: done}
+    0: {L: 0ism}
+    1: {write: 0, R: ToUniStartP}
+    2: {write: 1, R: ToUniStartP}
+    3: {write: 2, R: ToUniStartP}
+    4: {write: 3, R: ToUniStartP}
+    5: {write: 4, R: ToUniStartP}
+    6: {write: 5, R: ToUniStartP}
+    7: {write: 6, R: ToUniStartP}
+    8: {write: 7, R: ToUniStartP}
+    9: {write: 8, R: ToUniStartP}
+    
+  ToUniStartP:
+    [0,1,2,3,4,5,6,7,8,9]: R
+    ' '  : {R: ToUniEndP}
+    
+  ToUniEndP:
+    1: R
+    ' ': {write: 1, L: ToDecimalStartP}
+    
+  ToDecimalStartP:
+    1: L
+    ' ': {L: Decrease}
+    
+  0ism:
+    0: {L: 0ism}
+    ' ': {R: done}
+    1: {write: 0, R: TENmONE}
+    2: {write: 1, R: TENmONE}
+    3: {write: 2, R: TENmONE}
+    4: {write: 3, R: TENmONE}
+    5: {write: 4, R: TENmONE}
+    6: {write: 5, R: TENmONE}
+    7: {write: 6, R: TENmONE}
+    8: {write: 7, R: TENmONE}
+    9: {write: 8, R: TENmONE}
+    
+  TENmONE:
+    0: {write: 9, R: TENmONE}
+    ' ': {L: ToUniStartP}
+  done:

@@ -1,0 +1,233 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+  <info>
+    <title>Helló, Schwarzenegger!</title>
+    <keywordset>
+      <keyword/>
+    </keywordset>
+  </info>
+  <section xml:id="hax-textbook-feladatok-schwarzenegger">
+    <title>Szoftmax Py MNIST</title>
+    <para>
+      Python (lehet az SMNIST <citation>SMNIST</citation> is a példa).
+    </para>
+    <para>
+      Megoldás videó: <link xlink:href="https://youtu.be/j7f9SkJR3oc">https://youtu.be/j7f9SkJR3oc</link>
+    </para>
+    <para>
+      Megoldás forrása: <link xlink:href="https://github.com/tensorflow/tensorflow/releases/tag/v0.9.0">https://github.com/tensorflow/tensorflow/releases/tag/v0.9.0</link> (/tensorflow-0.9.0/tensorflow/examples/tutorials/mnist/), <link xlink:href="https://progpater.blog.hu/2016/11/13/hello_samu_a_tensorflow-bol">https://progpater.blog.hu/2016/11/13/hello_samu_a_tensorflow-bol</link>
+    </para>
+    <para>
+      A programunk célja, hogy a neurális hálónkat betanítsa és hogy az MNIST-ben lévő számokat fel tudja ismerni, majd ennek a hatékonyságát közli velünk.
+      Az MNIST adatbázis egy kézzel írott számok képeiből álló adatbázis, amelyet gyakran használnak a gépi tanulás köreiben és képfeldolgozó rendszerek tanítására.
+      A tensorflow egy gépi tanulásra készített library amelyet a google fejlesztett ki, a programunkban ezt is használni fogjuk.
+
+
+
+    </para>
+
+    <programlisting language="Python">
+      <![CDATA[
+
+#először is importáljuk a tensorflow könyvtárat és az mnist datesetjét betöltjük.
+
+import tensorflow as tf
+
+mnist = tf.keras.datasets.mnist
+
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
+x_train, x_test = x_train / 255.0, x_test / 255.0
+
+#Felépítjük a modellünket, ez egy 28x28-as kép lesz
+
+model = tf.keras.models.Sequential([
+  tf.keras.layers.Flatten(input_shape=(28, 28)),
+  tf.keras.layers.Dense(128, activation='relu'),
+  tf.keras.layers.Dropout(0.2),
+  tf.keras.layers.Dense(10)
+])
+
+predictions = model(x_train[:1]).numpy()
+predictions
+
+tf.nn.softmax(predictions).numpy()
+
+loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
+
+loss_fn(y_train[:1], predictions).numpy()
+
+#Itt a program hatékonyságát számoljuk ki
+
+model.compile(optimizer='adam',
+              loss=loss_fn,
+              metrics=['accuracy'])
+
+model.fit(x_train, y_train, epochs=5)
+
+model.evaluate(x_test,  y_test, verbose=2)
+
+probability_model = tf.keras.Sequential([
+  model,
+  tf.keras.layers.Softmax()
+])
+
+probability_model(x_test[:5])
+
+
+
+
+]]>
+
+</programlisting>
+
+
+  </section>
+
+  <!--
+    <section>
+        <title>Szoftmax R MNIST</title>
+        <para>
+            R            
+        </para>
+        <para>
+            Megoldás videó:
+        </para>
+        <para>
+            Megoldás forrása:                
+        </para>
+        <para>
+            Tanulságok, tapasztalatok, magyarázat...
+        </para>
+    </section>        
+-->
+
+  <section>
+    <title>Mély MNIST</title>
+    <para>
+      Python (MNIST vagy SMNIST, bármelyik, amely nem a softmaxos, például lehet egy CNN-es).
+    </para>
+    <para>
+      Megoldás videó: <link xlink:href="https://bhaxor.blog.hu/2019/03/10/the_semantic_mnist">https://bhaxor.blog.hu/2019/03/10/the_semantic_mnist</link>
+    </para>
+    <para>
+      Megoldás forrása: SMNIST, <link xlink:href="https://gitlab.com/nbatfai/smnist">https://gitlab.com/nbatfai/smnist</link>
+    </para>
+    <para>
+      A programunk hasonló az előző feladatban lévőhöz, itt viszont egy képet átadva a programnak, megpróbálja felismerni, hogy a képen milyen szám van.
+    </para>
+
+
+    <programlisting language="Python">
+      <![CDATA[
+import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Conv2D, Dropout, Flatten, MaxPooling2D
+
+from PIL import Image
+import numpy as np
+import sys
+
+#A következő három sort kommentbe raktam, így tudott csak lefutni a gépemen a program
+
+#physical_devices = tf.config.experimental.list_physical_devices('GPU')
+#assert len(physical_devices) > 0, "Not enough GPU hardware devices available"
+#tf.config.experimental.set_memory_growth(physical_devices[0], True)
+
+(x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
+
+#A kapott képet itt újraméretezzük
+
+x_train = x_train.reshape(x_train.shape[0], 28, 28, 1)
+x_test = x_test.reshape(x_test.shape[0], 28, 28, 1)
+x_train = x_train.astype('float32')
+x_test = x_test.astype('float32')
+x_train /= 255
+x_test /= 255
+
+
+model = Sequential()
+model.add(Conv2D(28, kernel_size=(3,3), input_shape=(28, 28, 1)))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Flatten())
+model.add(Dense(128, activation=tf.nn.relu))
+model.add(Dropout(0.2))
+model.add(Dense(10,activation=tf.nn.softmax))
+
+tb_log_dir = "./cnn_tb"
+file_writer = tf.summary.create_file_writer(tb_log_dir)
+file_writer.set_as_default()
+tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=tb_log_dir, profile_batch=0)
+
+model.compile(optimizer='adam', 
+              loss='sparse_categorical_crossentropy', 
+              metrics=['accuracy'])
+
+model.fit(x=x_train,y=y_train, epochs=10, callbacks=[tensorboard_callback])
+
+model.evaluate(x_test, y_test)
+
+input_image = np.array(Image.open(sys.argv[1]).getdata(0).resize((28, 28), 0))
+
+pred = model.predict(input_image.reshape(1, 28, 28, 1))
+
+print (pred)
+
+print("The number is = ", pred.argmax())
+
+
+
+]]>
+    </programlisting>
+
+
+  </section>
+  <!--
+    <section>
+        <title>Deep dream</title>
+        <para>
+            Keras            
+        </para>
+        <para>
+            Megoldás videó:
+        </para>
+        <para>
+            Megoldás forrása:                
+        </para>
+        <para>
+            Tanulságok, tapasztalatok, magyarázat...
+        </para>
+    </section>        
+-->
+  <section>
+    <title>Minecraft-MALMÖ</title>
+    <para>
+      Most, hogy már van némi ágensprogramozási gyakorlatod, adj egy rövid általános áttekintést a MALMÖ projektről!
+    </para>
+    <para>
+      Megoldás videó: initial hack: <link xlink:href="https://youtu.be/bAPSu3Rndi8">https://youtu.be/bAPSu3Rndi8</link>.
+      Red Flower Hell: <link xlink:href="https://github.com/nbatfai/RedFlowerHell">https://github.com/nbatfai/RedFlowerHell</link>.
+    </para>
+    <para>
+      Megoldás forrása:
+    </para>
+    <para>
+      A Malmö Projekt egy minecraft mod, amit a Microsoft készített. Itt célunk kódokkal irányítani a karakterünket, ezzel a mesterséges intelligencia
+      felé próbálunk közelíteni. A kódjainkban igyekszünk úgy irányítani a karakterünket, hogy különböző szituációkkor különféleképpen cselekedjen.
+      Az egyetemen a mi feladatunk az volt, hogy egy legenerált pályán Steve (a minecraft karakterünk) járja körbe az arénát, érzékelje a környezetét
+      és keressen, majd szedjen fel minél több virágot akadálymentesen mielőtt az arénánk oldalain lefolyó lávával találkozik,
+      tehát ha például csapdába esik, akkor abból szabaduljon ki, ha virág van a közelében, akkor úgy lépjen, hogy azt fel tudja venni, stb.
+
+
+    </para>
+ <!-- </section>
+  <section>
+    <title>Vörös Pipacs Pokol/javíts a 19 RF-en</title>
+    <para>
+      Megoldás forrása: <link xlink:href="https://github.com/nbatfai/RedFlowerHell">https://github.com/nbatfai/RedFlowerHell</link>
+    </para>
+    <para>
+      Schwarzenegger mappában található 30RF.py néven
+    </para>
+  </section>
+  -->
+    </section>
+</chapter>

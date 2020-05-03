@@ -1,0 +1,370 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Welch!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
+    <section>
+        <title>Első osztályom</title>
+        <para>
+            Valósítsd meg C++-ban és Java-ban az módosított polártranszformációs algoritmust! A matek háttér 
+            teljesen irreleváns, csak annyiban érdekes, hogy az algoritmus egy számítása során két normálist
+            számol ki, az egyiket elspájzolod és egy további logikai taggal az osztályban jelzed, hogy van vagy
+            nincs eltéve kiszámolt szám.
+        </para>
+        <para>
+            Megoldás videó:
+        </para>
+        <para>
+            Megoldás forrása:                
+        </para>
+        <para>
+            Tanulságok, tapasztalatok, magyarázat... térj ki arra is, hogy a JDK forrásaiban a Sun programozói
+            pont úgy csinálták meg ahogyan te is, azaz az OO nemhogy nem nehéz, hanem éppen természetes neked!
+        </para>                
+    <para>      	
+    PolarGen osztály:
+    </para>  
+    <programlisting language="C++">
+<![CDATA[#ifndef POLARGEN_H
+#define POLARGEN_H
+
+#include <cstdlib>
+#include <cmath>
+#include <ctime>
+
+class PolarGen
+{
+    public:
+    PolarGen ()
+    {
+    nincsTarolt = true;
+    std::srand (std::time (NULL));
+    }
+    ~PolarGen(){
+    }
+    double kovetkezo();
+
+    private:
+    bool nincsTarolt;
+    double Tarolt;
+};
+
+#endif]]>
+    </programlisting> 
+      
+    <para>  
+    A PolarGen osztály definiálása:
+    </para>  
+      
+    <programlisting language="C++">
+<![CDATA[#include "polargen.h"
+
+double
+PolarGen::kovetkezo ()
+{
+    if(nincsTarolt){
+    double u1, u2, v1, v2, w;
+    do{
+    u1 = std::rand() / (RAND_MAX + 1.0);
+    u2 = std::rand() / (RAND_MAX + 1.0);
+    v1 = 2*u1 -1;
+    v2 = 2*u2 -1;
+    w = v1*v1+v2*v2;
+    }
+    while( w > 1);
+    double r = std::sqrt((-2*std::log(w)) / w);
+
+    Tarolt = r*v2;
+    nincsTarolt = !nincsTarolt;
+    return r*v1;
+    }
+
+    else
+    {
+    nincsTarolt = !nincsTarolt;
+    return Tarolt;
+    }
+}
+
+]]>
+    </programlisting> 
+
+    <para>  
+      Majd a mainfüggvényben az osztály példányosítása és használata:
+    </para>  
+    <programlisting language="C++">
+<![CDATA[#include <iostream>
+#include "polargen.h"
+
+int main(int argc, char **argv){
+    PolarGen pg;
+
+    for (int i = 0; i < 10; ++i)
+        std::cout <<pg.kovetkezo() << std::endl;
+
+    return 0;
+}
+]]>
+    </programlisting> 
+
+      <para>
+        A forrás megtalálható a Welch/Preorder mappában.
+      </para>  
+
+    <para>
+        Az osztály az objektum-orientált programozásban használt fogalom. Egy programban különböző feladatokat ellátó részeket osztályokra szeparálhatjuk, melyekkel egy sokkal rendezettebb forráskódot írhatunk, amit így könnyebben is kezelhetünk és olvashatunk.
+        Egy osztályban több mező is található, melyek metódusokat, deklarációkat tartalmaznak és így ezek lehetnek publikusak és privátak is, de örököltethetjük is őket. 
+        Az osztályokatból objektumokat példányosíthatunk le, melyek az osztály tulajdonságaival fognak rendelkezni. 
+    </para>                       
+
+</section>        
+
+    <section>
+        <title>LZW</title>
+        <para>
+            Valósítsd meg C-ben az LZW algoritmus fa-építését!
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="https://progpater.blog.hu/2011/03/05/labormeres_otthon_avagy_hogyan_dolgozok_fel_egy_pedat">https://progpater.blog.hu/2011/03/05/labormeres_otthon_avagy_hogyan_dolgozok_fel_egy_pedat</link>.               
+        
+    </para>
+    <para>
+      Megoldás a 6.6 feladatban
+    </para>
+ </section>     
+  
+    <section>
+        <title>Fabejárás</title>
+        <para>
+            Járd be az előző (inorder bejárású) fát pre- és posztorder is!
+        </para>
+        <para>
+            Megoldás forrása: <link xlink:href="https://slideplayer.hu/slide/2200487/">https://slideplayer.hu/slide/2200487/</link>.    
+        </para>
+
+    <para>
+      Egy bináris fát több féleképpen is bejárhatunk. Három féle bejárási módot ismerünk: Inorder,preorder, posztorder.
+    </para>
+
+    <figure>
+        <title>Inorder bejárás</title>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="Welch/inorder.jpg" scale="50" />
+            </imageobject>
+            <textobject>
+                <phrase>Inorder bejárás</phrase>
+            </textobject>
+        </mediaobject>
+    </figure>
+
+
+    <figure>
+        <title>Preorder bejárás</title>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="Welch/preorder.jpg" scale="50" />
+            </imageobject>
+            <textobject>
+                <phrase>Preorder bejárás</phrase>
+            </textobject>
+        </mediaobject>
+    </figure>
+
+
+    <figure>
+        <title>Postorder bejárás</title>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="Welch/postorder.jpg" scale="50" />
+            </imageobject>
+            <textobject>
+                <phrase>Postorder bejárás</phrase>
+            </textobject>
+        </mediaobject>
+    </figure>
+
+</section>        
+                        
+<section>
+      <title>Tag a gyökér</title>
+        <para>
+            Az LZW algoritmust ültesd át egy C++ osztályba, legyen egy Tree és egy beágyazott Node
+            osztálya. A gyökér csomópont legyen kompozícióban a fával!
+        </para>
+        <para>
+            Megoldás videó: <link xlink:href="https://youtu.be/_mu54BDkqiQ">https://youtu.be/_mu54BDkqiQ</link>
+        </para>
+        
+    <para>
+      Megoldás a 6.6 feladatban
+    </para>
+    
+</section>        
+                
+    <section>
+        <title>Mutató a gyökér</title>
+        <para>
+            Írd át az előző forrást, hogy a gyökér csomópont ne kompozícióban, csak aggregációban legyen a 
+            fával!
+        </para>
+       <para>
+            Megoldás videó: <link xlink:href="https://youtu.be/_mu54BDkqiQ">https://youtu.be/_mu54BDkqiQ</link>
+        </para>
+   
+<para>Megoldás a 6.6 feladatban</para>
+
+     </section>                     
+
+    <section>
+        <title>Mozgató szemantika</title>
+        <para>
+            Írj az előző programhoz másoló/mozgató konstruktort és értékadást, a mozgató konstruktor legyen a mozgató
+            értékadásra alapozva, a másoló értékadás pedig a másoló konstruktorra!
+        </para>
+        <para>
+            Megoldás videó: <link xlink:href="https://youtu.be/QBD3zh5OJ0Y">https://youtu.be/QBD3zh5OJ0Y</link>
+        </para>
+        <para>
+            Megoldás forrása:
+        </para>
+
+    <para>
+        A forráskód a Welch mappában található LZWBinFa.cpp néven
+    </para>
+    <para>
+      A bináris fánk felépítését a BinRandTree osztály létrehozásával kezdjük, ez, mint minden osztály a programunkban template osztály lesz, hogy minél szélesebb körben tudjuk használni a fánkat, azaz több típusra is használhatjuk majd. 
+    </para>  
+    <para>
+      A BinRandTree osztályunk protected részébe beágyazva található a Node osztály, ami a csomópontokat jelenteni. Egy csomópont egy elemet jelent, egy elemnek maximum két gyermeke lehet, egy baloldali és egy jobboldali, ezek új csomópontok lesznek. 
+    </para>
+
+        <programlisting language="C++">
+<![CDATA[template <typename ValueType>
+class BinRandTree {
+
+protected:
+    class Node {
+        
+    private:
+        ValueType value;
+        Node *left;
+        Node *right;
+        int count{0};
+        
+        Node(const Node &);
+        Node & operator=(const Node &);
+        Node(Node &&);
+        Node & operator=(Node &&);
+
+        
+    public:
+        Node(ValueType value, int count=0): value(value), count(count), left(nullptr), right(nullptr) {}
+        ValueType getValue() const { return value; }
+        Node * leftChild() const { return left; }
+        Node * rightChild() const { return right; }
+        void leftChild(Node * node){ left = node; }
+        void rightChild(Node * node){ right = node; }
+        int getCount() const { return count; }
+        void incCount() { ++count; }        
+    };
+]]>
+        </programlisting> 
+
+
+    <para>
+      Szükségünk lesz még mutatókra is, ez lesz a *root (gyökérmutató, ami a fa kezdetét jelenti) és *treep (mutató mellyel bejárhatjuk a fát, ez jelzi hol is járunk éppen). 
+    </para>
+
+    <programlisting language="C++">
+<![CDATA[
+
+    Node *root;
+    Node *treep;    
+    int depth{0};
+
+]]>
+    </programlisting> 
+
+    <para>
+        Ugyanakkor még szükségünk van mozgató és másoló konstruktorra és értékátadásra:
+    </para>
+
+
+        <programlisting language="C++">
+<![CDATA[
+
+public:
+    BinRandTree(Node *root = nullptr, Node *treep = nullptr): root(root), treep(treep) {
+        std::cout << "BT ctor" << std::endl;        
+    }
+    
+    BinRandTree(const BinRandTree & old) {		//Másoló konstruktor
+        std::cout << "BT copy ctor" << std::endl;
+        
+        root = cp(old.root, old.treep); 		//A létrehozott fa *rootjának értékül adjuk a paraméterként kapott fáét
+        
+    }
+    
+    Node * cp(Node *node, Node *treep) 			//A másoláshoz szükséges függvény, mely egy Node mutatóval tér vissza
+    {
+        Node * newNode = nullptr;			// Először létrehozunk egy Node mutatót ami egy nullptr még
+        
+
+//A létrehozott mutatónak allokálunk memóriát a paraméterként kapott node adataival
+
+
+        if(node)
+        {
+            newNode = new Node(node->getValue(), 42 /*node->getCount()*/);	            
+            newNode->leftChild(cp(node->leftChild(), treep));            
+            newNode->rightChild(cp(node->rightChild(), treep));
+            
+            if(node == treep)
+                this->treep = newNode;
+        }
+        
+        return newNode;
+    }
+    
+    
+    BinRandTree & operator=(const BinRandTree & old) {		//Másoló értékadás		
+        std::cout << "BT copy assign" << std::endl;
+        
+        BinRandTree tmp{old};				//Létrehozunk egy ideiglenes fát ami a paraméterként kapott fa másolata 
+        std::swap(*this, tmp);				//majd az egyenlőség bal oldalán lévő fával megcseréljük.
+        return *this;
+    }
+    
+    BinRandTree(BinRandTree && old) {			//Mozgató konstruktor
+        std::cout << "BT move ctor" << std::endl;
+        
+        root = nullptr;
+        *this = std::move(old);
+    }
+       
+    BinRandTree & operator=(BinRandTree && old) {	//Mozgató értékadás
+        std::cout << "BT move assign" << std::endl;
+        
+        std::swap(old.root, root);
+        std::swap(old.treep, treep);
+        
+        return *this;
+    }
+    
+    ~BinRandTree(){					
+        std::cout << "BT dtor" << std::endl;
+        deltree(root);
+
+
+]]>
+        </programlisting> 
+
+
+
+    </section>
+                     
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+</chapter>                

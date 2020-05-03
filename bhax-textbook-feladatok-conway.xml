@@ -1,0 +1,335 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Conway!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
+  <section>
+    <title>Hangyaszimulációk</title>
+    <para>
+      Írj Qt C++-ban egy hangyaszimulációs programot, a forrásaidról utólag reverse engineering jelleggel
+      készíts UML osztálydiagramot is!
+    </para>
+    <para>
+      Megoldás videó: <link xlink:href="https://bhaxor.blog.hu/2018/10/10/myrmecologist">https://bhaxor.blog.hu/2018/10/10/myrmecologist</link>
+    </para>
+    <para>
+      Megoldás forrása: <link xlink:href="https://gitlab.com/nbatfai/bhax/-/tree/master/attention_raising%2FMyrmecologist">https://gitlab.com/nbatfai/bhax/-/tree/master/attention_raising%2FMyrmecologist</link>
+    </para>
+
+    <figure>
+      <title>A hangyaszimulációs program UML diagramja</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="img/uml.png" scale="50" />
+        </imageobject>
+        <textobject>
+          <phrase>A hangyaszimulációs program UML diagramja</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+
+    <para>
+      A programunk egy hangyaszimulációs program lesz, mely a hangyáknak egy véletlenszerű mozgását fogja szimulálni.
+      A mozgások egy 2 dimenziós területen fognak történni
+      A program 3 osztályból épül fel, az
+      <link xlink:href="Conway/Myrmecologist/ant.h">
+        <filename>Ant</filename>
+      </link>
+
+      ,
+
+      <link xlink:href="Conway/Myrmecologist/antthread.h">
+        <filename>AntThread</filename>
+      </link>
+
+      és
+
+      <link xlink:href="Conway/Myrmecologist/antwin.h">
+        <filename>AntWin</filename>
+      </link>
+
+      osztályokból, mint azt láthatjuk a fentebbb lévő UML diagrammon is.
+
+    </para>
+
+    <figure>
+      <title>Hangyaszimuláció</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="Conway/hangya.png" scale="30" />
+        </imageobject>
+        <textobject>
+          <phrase>Hangyaszimuláció</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+
+
+
+
+  </section>
+  <section>
+    <title>Java életjáték</title>
+    <para>
+      Írd meg Java-ban a John Horton Conway-féle életjátékot,
+      valósítsa meg a sikló-kilövőt!
+    </para>
+    <para>
+      Megoldás forrása: <link xlink:href="https://regi.tankonyvtar.hu/hu/tartalom/tkt/javat-tanitok-javat/apb.html#conway">https://regi.tankonyvtar.hu/hu/tartalom/tkt/javat-tanitok-javat/apb.html#conway</link>
+    </para>
+
+    <para>
+      Megtalálható a forráskód:   <link xlink:href="Conway/Sejtautomata.java">
+        <filename>Conway/Sejtautomata.java</filename>
+      </link>
+
+
+    </para>
+
+
+    <para>
+
+      A játékunkban egy sejt egy sejttér eleme, a sejt állapota lehet élő vagy halott. A adott időben működő sejttér adott sejtjének állapotát a következő időpillanatban a következő szabályok alapján számolhatjuk ki:
+      -Élő sejt élő marad, ha kettő vagy három élő szomszédja van, különben halott lesz.
+
+      -Halott sejt halott marad, ha három élő szomszédja van, különben élő lesz.
+
+    </para>
+
+    <figure>
+      <title>Életjáték</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="Conway/sejtautomata.png" scale="30" />
+        </imageobject>
+        <textobject>
+          <phrase>Életjáték</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+
+
+
+
+  </section>
+  <section>
+    <title>Qt C++ életjáték</title>
+    <para>
+      Most Qt C++-ban!
+    </para>
+    <para>
+      Megoldás forrása: <link xlink:href="https://bhaxor.blog.hu/2018/09/09/ismerkedes_az_eletjatekkal">https://bhaxor.blog.hu/2018/09/09/ismerkedes_az_eletjatekkal</link>
+    </para>
+    <para>
+      Megoldás videó: a hivatkozott blogba ágyazva.
+    </para>
+    <para>
+      Ez a programunk két osztályból fog állni. A SejtAblak osztályunkban állítjuk be az ablakunk méretét szélesség és magasság szerint, és ugyanígy állítjuk be a cellák méretét is.
+      Ezek a SejtAblak konstruktorában fognak megtörténni
+    </para>
+    <para>
+
+      Az ablak magasságát és szélességét inicializáljuk a paraméterként kapott számokkal
+
+
+      <programlisting language="C++">
+        <![CDATA[
+
+SejtAblak::SejtAblak(int szelesseg, int magassag, QWidget *parent)
+    : QMainWindow(parent)
+{
+    setWindowTitle("A John Horton Conway-féle életjáték");
+
+    this->magassag = magassag;			
+    this->szelesseg = szelesseg;
+
+    cellaSzelesseg = 6;				
+    cellaMagassag = 6;
+
+
+
+]]>
+      </programlisting>
+
+
+      Láthatjuk, hogy a cellák méretétől függően az ablak mérete is változik.
+      A for ciklusokkal a rácson végigmenve a cellákra beállítunk egy-egy boolt,
+      amiből majd látjuk, hogy melyik cella lesz halott és melyik élő sejt.
+
+
+      <programlisting language="C++">
+        <![CDATA[setFixedSize(QSize(szelesseg*cellaSzelesseg, magassag*cellaMagassag)); 
+    racsok = new bool**[2];
+    racsok[0] = new bool*[magassag];
+    for(int i=0; i<magassag; ++i)
+        racsok[0][i] = new bool [szelesseg];
+    racsok[1] = new bool*[magassag];
+    for(int i=0; i<magassag; ++i)
+        racsok[1][i] = new bool [szelesseg];
+
+    racsIndex = 0;
+    racs = racsok[racsIndex];
+    // A kiinduló racs minden cellája HALOTT
+    for(int i=0; i<magassag; ++i)
+        for(int j=0; j<szelesseg; ++j)
+            racs[i][j] = HALOTT;
+    // A kiinduló racsra "ELOlényeket" helyezünk
+    //siklo(racs, 2, 2);
+    sikloKilovo(racs, 5, 60);
+
+
+    eletjatek = new SejtSzal(racsok, szelesseg, magassag, 120, this);
+    eletjatek->start();
+
+}
+]]>
+      </programlisting>
+
+      Miután a SejtSzal konstruktorát meghívjuk, végigvizsgáljuk a sejtek szomszédjait a SejtSzal osztályban lévő szomszedokSzama függvénnyel.
+
+
+
+
+      <programlisting language="C++">
+        <![CDATA[
+int SejtSzal::szomszedokSzama(bool **racs,
+                              int sor, int oszlop, bool allapot) {
+    int allapotuSzomszed = 0;
+    // A nyolcszomszédok végigzongorázása:
+    for(int i=-1; i<2; ++i)
+        for(int j=-1; j<2; ++j)
+            // A vizsgált sejtet magát kihagyva:
+            if(!((i==0) && (j==0))) {
+        // A sejttérbõl szélének szomszédai
+        // a szembe oldalakon ("periódikus határfeltétel")
+        int o = oszlop + j;
+        if(o < 0)
+            o = szelesseg-1;
+        else if(o >= szelesseg)
+            o = 0;
+
+        int s = sor + i;
+        if(s < 0)
+            s = magassag-1;
+        else if(s >= magassag)
+            s = 0;
+
+        if(racs[s][o] == allapot)
+            ++allapotuSzomszed;
+    }
+
+    return allapotuSzomszed;
+}
+]]>
+      </programlisting>
+
+      Majd ezt a függvényt felhasználjuk a következő metódusunkban, amiben az élő szomszédok számát ellenőrízzük és eszerint adunk új értéket a vizsgált cellának.
+
+
+
+      <programlisting language="C++">
+        <![CDATA[
+void SejtSzal::idoFejlodes() {
+
+    bool **racsElotte = racsok[racsIndex];
+    bool **racsUtana = racsok[(racsIndex+1)%2];
+
+    for(int i=0; i<magassag; ++i) { // sorok
+        for(int j=0; j<szelesseg; ++j) { // oszlopok
+
+            int elok = szomszedokSzama(racsElotte, i, j, SejtAblak::ELO);
+
+            if(racsElotte[i][j] == SejtAblak::ELO) {
+                /* Élõ élõ marad, ha kettõ vagy három élõ
+             szomszedja van, különben halott lesz. */
+                if(elok==2 || elok==3)
+                    racsUtana[i][j] = SejtAblak::ELO;
+                else
+                    racsUtana[i][j] = SejtAblak::HALOTT;
+            }  else {
+                /* Halott halott marad, ha három élõ
+             szomszedja van, különben élõ lesz. */
+                if(elok==3)
+                    racsUtana[i][j] = SejtAblak::ELO;
+                else
+                    racsUtana[i][j] = SejtAblak::HALOTT;
+            }
+        }
+    }
+    racsIndex = (racsIndex+1)%2;
+}
+]]>
+      </programlisting>
+
+      Fentebb a lényegesebb részeket emeltem ki, a kód többi része megtalálható a Conway/cppeletjatek mappában:
+
+      <link xlink:href="Conway/cppeletjatek/sejtablak.h">
+        <filename>SejtAblak</filename>
+      </link>
+
+      <link xlink:href="Conway/cppeletjatek/sejtszal.h">
+        <filename>SejtSzal</filename>
+      </link>
+    </para>
+
+    <figure>
+      <title>Életjáték</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="Conway/cppelet.png" scale="40" />
+        </imageobject>
+        <textobject>
+          <phrase>Életjáték</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+
+
+
+  </section>
+  <section>
+    <title>BrainB Benchmark</title>
+    <para>
+    </para>
+    <para>
+      Megoldás videó: initial hack: <link xlink:href="https://www.twitch.tv/videos/139186614">https://www.twitch.tv/videos/139186614</link>
+    </para>
+    <para>
+      Megoldás forrása: <link xlink:href="https://github.com/nbatfai/esport-talent-search">https://github.com/nbatfai/esport-talent-search</link>
+    </para>
+
+    <para>
+
+      A BrainB program tulajdonképpen az embert vizsgálja. Tapasztalhattuk már, hogy különböző játékokban, az irányított karakterünket szem elől veszítjük különböző tényezők hatására.
+      Mint például ha még több karakter gyűlik a miénk köré, esetleg különböző effektek is takarják a láthatóságát közben. Ilyenkor nehéz követni, hogy mi hol is vagyunk, mit csinálunk éppen. A BrainB program pont ezt a képességünket méri. A programban, mint láthatjuk a lentebb lévő képünkön, sok kis négyzet között, melyeknek a közepén egy pont van, egyik a saját négyzetünk.
+
+    </para>
+    <para>
+      A mi feladatunk, hogy azt a négyzetet kövessük az egérmutatónkkal. Erre időlimit van, maximum 10 percig követhetjük a négyzetünket és közben lenyomva kell tartanunk a balegérgombunkat.
+      Végül kapunk egy eredményt abból számítva, hogy hányszor vesztettük el a négyzetünket, mennyire tudtuk követni.
+    </para>
+
+
+
+
+
+    <para>
+
+      <figure>
+        <title>BrainB program és kimenete</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="img/brainb.jpg" scale="50" />
+          </imageobject>
+          <textobject>
+            <phrase>BrainB program és kimenete</phrase>
+          </textobject>
+        </mediaobject>
+      </figure>
+
+    </para>
+  </section>
+
+</chapter>                
