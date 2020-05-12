@@ -26,7 +26,9 @@
         <para>
             Miért univerzális? Mert az olvasótól (kvázi az írótól) függ, hogy kinek szól a könyv. 
             Alapértelmezésben gyerekeknek, mert velük készítem az iniciális változatot. 
-            Ám tervezem felhasználását az egyetemi programozás oktatásban is. Ahogy szélesedni tudna a 
+            Ám felhasználjuk az egyetemi programozás oktatásban is: a reguláris programozás képzésben minden
+            hallgató otthon elvégzendő labormérési jegyzőkönyvként, vagy kollokviumi jegymegajánló 
+            dolgozatként írja meg a saját változatát belőle. Ahogy szélesedni tudna a 
             felhasználók köre, akkor lehetne kiadása különböző korosztályú gyerekeknek, családoknak, 
             szakköröknek, programozás kurzusoknak, felnőtt és továbbképzési műhelyeknek és sorolhatnánk... 
         </para>

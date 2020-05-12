@@ -47,7 +47,7 @@
     </copyright>
     <legalnotice>           
         <para>                
-            Copyright (C) 2019, Norbert Bátfai Ph.D., batfai.norbert@inf.unideb.hu, nbatfai@gmail.com, 
+            Copyright (C) 2019, 2020, Norbert Bátfai Ph.D., batfai.norbert@inf.unideb.hu, nbatfai@gmail.com, 
         </para>
         <para>
             Permission is granted to copy, distribute and/or modify this document
@@ -69,6 +69,9 @@
         <para>
             <link xlink:href="http://gnu.hu/fdl.html">http://gnu.hu/fdl.html</link>                
         </para>
+        <para>
+        A tananyag elkészítését az EFOP-3.4.3-16-2016-00021 számú projekt támogatta. A projekt az Európai Unió támogatásával, az Európai Szociális Alap társfinanszírozásával valósult meg.
+        </para>        
     </legalnotice>   
     
     <xi:include href="bhax-textbook-revhistory.xml">

@@ -20,10 +20,97 @@
             </publisher>
             <pubdate>2005</pubdate>
         </biblioentry>  
+        <biblioentry xml:lang="hu">
+            <abbrev>PICI</abbrev>
+            <authorgroup>
+                <author>
+                    <personname>
+                        <firstname>István</firstname>
+                        <surname>Juhász</surname>
+                    </personname>
+                </author>
+            </authorgroup>
+            <title>Magas szintű programozási nyelvek I.</title>
+        </biblioentry>  
+        <biblioentry xml:lang="en">
+            <abbrev>SMNIST</abbrev>
+            <authorgroup>
+                <author>
+                    <personname>
+                        <firstname>Norbert</firstname>
+                        <surname>Bátfai</surname>
+                    </personname>
+                </author>
+                <author>
+                    <personname>
+                        <firstname>Dávid</firstname>
+                        <surname>Papp</surname>
+                    </personname>
+                </author>
+                <author>
+                    <personname>
+                        <firstname>Gergő</firstname>
+                        <surname>Bogacsovics</surname>
+                    </personname>
+                </author>
+                <author>
+                    <personname>
+                        <firstname>Máté</firstname>
+                        <surname>Szabó</surname>
+                    </personname>
+                </author>
+                <author>
+                    <personname>
+                        <firstname>Viktor Szilárd</firstname>
+                        <surname>Simkó</surname>
+                    </personname>
+                </author>
+                <author>
+                    <personname>
+                        <firstname>Márió</firstname>
+                        <surname>Bersenszki</surname>
+                    </personname>
+                </author>
+                <author>
+                    <personname>
+                        <firstname>Gergely</firstname>
+                        <surname>Szabó</surname>
+                    </personname>
+                </author>
+                <author>
+                    <personname>
+                        <firstname>Lajos</firstname>
+                        <surname>Kovács</surname>
+                    </personname>
+                </author>
+                <author>
+                    <personname>
+                        <firstname>Ferencz</firstname>
+                        <surname>Kovács</surname>
+                    </personname>
+                </author>
+                <author>
+                    <personname>
+                        <firstname>Erik Szilveszter</firstname>
+                        <surname>Varga</surname>
+                    </personname>
+                </author>
+            </authorgroup>
+            <title>Object file system software experiments about the notion of number in humans and machines</title>
+            <publisher>
+                <publishername>
+                    Cognition, Brain, Behavior. An Interdisciplinary Journal
+                </publishername>
+            </publisher>
+            <biblioid class="doi">
+                 10.24193/cbb.2019.23.15
+            </biblioid>
+            <pubdate>2019</pubdate>
+        </biblioentry>          
     </bibliodiv> 
     <bibliodiv>
         <title>C</title>
-        <biblioentry>
+        <biblioentry xml:lang="hu">
             <abbrev>KERNIGHANRITCHIE</abbrev>
             <authorgroup>
                 <author>
@@ -48,7 +135,7 @@
     </bibliodiv>
     <bibliodiv>
         <title>C++</title>
-        <biblioentry>
+        <biblioentry xml:lang="hu">
             <abbrev>BMECPP</abbrev>
             <authorgroup>
                 <author>
@@ -69,6 +156,37 @@
                 <publishername>Bp., Szak Kiadó</publishername>
             </publisher>
             <pubdate>2013</pubdate>
+        </biblioentry>            
+    </bibliodiv>
+    <bibliodiv>
+        <title>Python</title>
+        <biblioentry xml:lang="hu">
+            <abbrev>BMEPY</abbrev>
+            <authorgroup>
+                <author>
+                    <personname>
+                        <firstname>Péter</firstname>
+                        <surname>Ekler</surname>
+                    </personname>
+                </author>
+                <author>
+                    <personname>
+                        <firstname>Bertalan</firstname>
+                        <surname>Forstner</surname>
+                    </personname>
+                </author>
+                <author>
+                    <personname>
+                        <firstname>Imre</firstname>
+                        <surname>Kelényi</surname>
+                    </personname>
+                </author>
+            </authorgroup>
+            <title>Bevezetés a mobilprogramozásba - Gyors prototípusfejlesztés Python és Java nyelven</title>
+            <publisher>
+                <publishername>Bp., Szak Kiadó</publishername>
+            </publisher>
+            <pubdate>2008</pubdate>
         </biblioentry>            
     </bibliodiv>
     <bibliodiv>

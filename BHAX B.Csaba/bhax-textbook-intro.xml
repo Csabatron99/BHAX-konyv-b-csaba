@@ -12,34 +12,15 @@
             </keywordset>
         </info>
         <section>
-          <title>Mi a programozás?</title>
-          <para>
-            Ne cifrázzuk: programok írása. Mik akkor a programok? Mit jelent az írásuk?
-            Számítógép-programozás (vagy egyszerűen programozás) egy vagy több absztrakt algoritmus megvalósítását jelenti egy bizonyos programozási nyelven. A programozásban megtaláljuk a művészet, a tudomány, a matematika és a mérnöki tudomány elemeit.
-
-            A programok maga az az utasítás vagy utasítás sorozat ami vezérel egy számítógépet. Valamint segíti a felhasználót( Szoftverek ) a számítógép netalántán más gépek használatában, vagy elszörakoztatja( Játékok )
-            azt különböző szórakoztató programokkal. Ennek a skálája végtelennek tekinthető, hogy miket lehet létrehozni ebben a szakmában.
-
-            <Title>Az írásuknak van egy úgymond részei:</Title>
-            <itemizedlist>
-              <listitem>
-                1. A megoldandó probléma meghatározása, felmérése a majdani felhasználók igényei alapján, specifikáció készítése
-              </listitem>
-              <listitem>
-                2. Valamely programtervezési módszerrel a programszerkezet megalkotása és a használandó eszközök kiválasztása. (Hardver platform, nyelvek, adatok stb…)
-              </listitem>
-              <listitem>
-                3. Forrásprogram elkészítése (kódolás)
-              </listitem>
-              <listitem>
-                4. A kész program tesztelése
-              </listitem>
-              <listitem>
-                5. Dokumentáció készítése, mely tartalmazza a szoftvertervezés fázisaiban keletkezett adatokat (felhasználói leírás, igényfelmérés, programtervek, algoritmusok, forráskód, tesztelési jegyzőkönyvek stb.),
-                fő célja a szoftver későbbi fejlesztésének elősegítése.
-              </listitem>
-            </itemizedlist>
-          </para>
+            <title>Mi a programozás?</title>
+            <para>
+                Ne cifrázzuk: programok írása. Mik akkor a programok? Mit jelent az írásuk?
+            </para>
+            <para>
+                Magam is ezeken gondolkozok. Szerintem a programozás lesz a jegyünk egy másik világba...,  
+                hogy a galaxisunk közepén lévő fekete lyuk eseményhorizontjának felületével ez milyen relációban van, ha 
+                egyáltalán, hát az homályos...
+            </para>
         </section>
         <section>
             <title>Milyen doksikat olvassak el?</title>
@@ -73,18 +54,102 @@
                 <listitem>
                     <para>Az R kódok olvasása kis általános tapasztalat után automatikusan, erőfeszítés nélkül menni fog. 
                         A Python nincs ennyire a spektrum magától értetődő végén, ezért ahhoz olvasd el a  
-                        <citation>BMECPP</citation> könyv - 20 oldalas gyorstalpaló részét.
+                        <citation>BMEPY</citation> könyv 25-49, kb. 20 oldalas gyorstalpaló részét.
                     </para>                        
                 </listitem>
             </itemizedlist>            
         </section>
         <section>
-            <title>Milyen filmeket nézzek meg?</title>
+            <title>Milyen filmeket, előadásokat nézzek meg, könyveket olvassak el?</title>
+            <para>
+                A kurzus kultúrájának élvezéséhez érdekes lehet a következő elméletek megismerése, könyvek elolvasása,
+                filmek megnézése.
+            </para>
+            <para>
+                Elméletek.
+            </para>            
+            <itemizedlist>
+                <listitem>
+                    <para>
+                        Einstein: A speciális relativítás elmélete.
+                    </para>                        
+                </listitem>
+                <listitem>
+                    <para>
+                        Schrödinger: Mi az élet?
+                    </para>                        
+                </listitem>
+                <listitem>
+                    <para>
+                        Penrose-Hameroff: Orchestrated objective reduction.
+                    </para>                        
+                </listitem>
+                <listitem>
+                    <para>Julian Jaynes: Breakdown of the Bicameral Mind.
+                    </para>                        
+                </listitem>
+            </itemizedlist>
+            <para>
+                Könyvek.
+            </para>            
+            <itemizedlist>
+                <listitem>
+                    <para>
+                        Carl Sagan, Kapcsolat.
+                    </para>                        
+                </listitem>
+                <listitem>
+                    <para>
+                        Roger Penrose, A császár új elméje.
+                    </para>                        
+                </listitem>
+                <listitem>
+                    <para>
+                        Asimov: Én, a robot.
+                    </para>                        
+                </listitem>
+                <listitem>
+                    <para>
+                        Arthur C. Clarke: A gyermekkor vége.
+                    </para>                        
+                </listitem>
+            </itemizedlist>                        
+            <para>
+                Előadások.
+            </para>            
+            <itemizedlist>
+                <listitem>
+                    <para>
+                        Mariano Sigman: Your words may predict your future mental health, 
+                        <link xlink:href="https://youtu.be/uTL9tm7S1Io">https://youtu.be/uTL9tm7S1Io</link>,
+                        hihetetlen, de Julian Jaynes kétkamarás tudat elméletének legjobb bizonyítéka információtechnológiai...
+                    </para>                        
+                </listitem>
+                <listitem>
+                    <para>
+                        Daphne Bavelier: Your brain on video games, 
+                        <link xlink:href="https://youtu.be/FktsFcooIG8">https://youtu.be/FktsFcooIG8</link>,
+                        az esporttal kapcsolatos sztereotípiák eloszlatására (
+                        &#x201E;The video game players of tomorrow are older adults&#x201D;: 0.40-1:20,
+                        &#x201E;It is not true that Screen time make your eyesight worse&#x201D;: 5:02).
+                    </para>                        
+                </listitem>
+            </itemizedlist>            
+            <para>
+                Filmek.
+            </para>            
             <itemizedlist>
                 <listitem>
                     <para>21 - Las Vegas ostroma, 
                         <link xlink:href="https://www.imdb.com/title/tt0478087/">https://www.imdb.com/title/tt0478087/</link>,
                         benne a <link xlink:href="#bhax-textbook-feladatok-turing.MontyHall">Monty Hall probléma</link> bemutatása.
+                    </para>                        
+                </listitem>
+                <listitem>
+                    <para>Rain Man, 
+                        <link xlink:href="https://www.imdb.com/title/tt0095953/">https://www.imdb.com/title/tt0095953/</link>,
+                        az <citation>SMNIST</citation> munkát ihlette, melyeket akár az 
+                        <link xlink:href="#bhax-textbook-feladatok-schwarzenegger">MNIST</link>-ek helyett lehet csinálni.
                     </para>                        
                 </listitem>
                 <listitem>
@@ -94,42 +159,91 @@
                     </para>                        
                 </listitem>
                 <listitem>
-                    <para>, 
-                        <link xlink:href=""></link>,
-                        benne a <link xlink:href="#"></link> bemutatása.
+                    <para>Interstellar, 
+                        <link xlink:href="https://www.imdb.com/title/tt0816692">https://www.imdb.com/title/tt0816692</link>.
                     </para>                        
                 </listitem>
                 <listitem>
-                    <para>, 
-                        <link xlink:href=""></link>,
-                        benne a <link xlink:href="#"></link> bemutatása.
+                    <para>Middle Men, 
+                        <link xlink:href="https://www.imdb.com/title/tt1251757/">https://www.imdb.com/title/tt1251757/</link>, mitől 
+                        fejlődött az internetes fizetés?
                     </para>                        
                 </listitem>
                 <listitem>
-                    <para>, 
-                        <link xlink:href=""></link>,
-                        benne a <link xlink:href="#"></link> bemutatása.
+                    <para>Pixels, 
+                        <link xlink:href="https://www.imdb.com/title/tt2120120/">https://www.imdb.com/title/tt2120120/</link>, mitől
+                        fejlődött a PC?
                     </para>                        
                 </listitem>
                 <listitem>
-                    <para>, 
-                        <link xlink:href=""></link>,
-                        benne a <link xlink:href="#"></link> bemutatása.
+                    <para>Gattaca, 
+                        <link xlink:href="https://www.imdb.com/title/tt0119177/">https://www.imdb.com/title/tt0119177/</link>.
                     </para>                        
                 </listitem>
                 <listitem>
-                    <para>, 
-                        <link xlink:href=""></link>,
-                        benne a <link xlink:href="#"></link> bemutatása.
+                    <para>Snowden, 
+                        <link xlink:href="https://www.imdb.com/title/tt3774114/">https://www.imdb.com/title/tt3774114/</link>.
                     </para>                        
                 </listitem>
                 <listitem>
-                    <para>, 
-                        <link xlink:href=""></link>,
-                        benne a <link xlink:href="#"></link> bemutatása.
+                    <para>The Social Network, 
+                        <link xlink:href="https://www.imdb.com/title/tt1285016/">https://www.imdb.com/title/tt1285016/</link>.
+                    </para>                        
+                </listitem>
+                <listitem>
+                    <para>The Last Starfighter, 
+                        <link xlink:href="https://www.imdb.com/title/tt0087597/">https://www.imdb.com/title/tt0087597/</link>.
+                    </para>                        
+                </listitem>
+                <listitem>
+                    <para>What the #$*! Do We (K)now!?,, 
+                        <link xlink:href="https://www.imdb.com/title/tt0399877/">https://www.imdb.com/title/tt0399877/</link>.
+                    </para>                        
+                </listitem>
+                <listitem>
+                    <para>I, Robot, 
+                        <link xlink:href="https://www.imdb.com/title/tt0343818">https://www.imdb.com/title/tt0343818</link>.
                     </para>                        
                 </listitem>
             </itemizedlist> 
+            <para>
+                Sorozatok.
+            </para>            
+            <itemizedlist>
+                <listitem>
+                    <para>Childhood's End, 
+                        <link xlink:href="https://www.imdb.com/title/tt4171822/">https://www.imdb.com/title/tt4171822/</link>.
+                    </para>                        
+                </listitem>                
+                <listitem>
+                    <para>Westworld, 
+                        <link xlink:href="https://www.imdb.com/title/tt0475784/">https://www.imdb.com/title/tt0475784/</link>, 
+                         Ford az első évad 3. részében konkrétan meg is nevezi Julian Jaynes kétkamarás tudat elméletét, mint a 
+                        hosztok programozásának alapját...
+                    </para>                        
+                </listitem>                
+                <listitem>
+                    <para>Chernobyl, 
+                        <link xlink:href="https://www.imdb.com/title/tt7366338/">https://www.imdb.com/title/tt7366338/</link>.
+                    </para>                        
+                </listitem>                
+                <listitem>
+                    <para>Stargate Universe, 
+                        <link xlink:href="https://www.imdb.com/title/tt1286039">https://www.imdb.com/title/tt1286039</link>, a
+                        Desteny célja a mikrohullámú háttér struktúrája mögötti rejtély feltárása...
+                    </para>                        
+                </listitem>                
+                <listitem>
+                    <para>The 100, 
+                        <link xlink:href="https://www.imdb.com/title/tt2661044/">https://www.imdb.com/title/tt2661044/</link>.
+                    </para>                        
+                </listitem>  
+                <listitem>
+                    <para>Genius, 
+                        <link xlink:href="https://www.imdb.com/title/tt5673782">https://www.imdb.com/title/tt5673782</link>.
+                    </para>                        
+                </listitem> 
+            </itemizedlist>             
         </section>
     </chapter>                
 </part>  

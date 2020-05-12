@@ -35,12 +35,29 @@
         </revremark>
     </revision>
     <revision>
-      <revnumber>0.1.0</revnumber>
-      <date>2020-02-22</date>
-      <authorinitials>Csabatron99</authorinitials>
-      <revremark>
-        A feladatok kidolgozásának kidolgozása. A könyv kidolgozásának elkezdése.
-
-      </revremark>
+        <revnumber>0.0.5</revnumber>
+        <date>2020-03-02</date>
+        <authorinitials>nbatfai</authorinitials>
+        <revremark>
+            Az Chomsky/a<superscript>n</superscript>b<superscript>n</superscript>c<superscript>n</superscript> 
+            és Caesar/EXOR csokor feladatok kiírásának aktualizálása (a heti előadás és laborgyakorlatok támogatására).
+        </revremark>
+    </revision>
+    <revision>
+        <revnumber>0.0.6</revnumber>
+        <date>2020-03-21</date>
+        <authorinitials>nbatfai</authorinitials>
+        <revremark>
+            A MALMÖ projektes feladatok átvezetése, minden csokor utolsó feladata Minecraft ágensprogramozás ezzel. Mottók aktualizálása.
+            Prog1 feladatok aktuzalizálása. Javasolt (soft skill) filmek, elméletek, könyvek, előadások be.
+        </revremark>
+    </revision>
+        <revision>
+        <revnumber>0.0.7</revnumber>
+        <date>2020-03-22</date>
+        <authorinitials>nbatfai</authorinitials>
+        <revremark>
+            Javítások.
+        </revremark>
     </revision>
 </revhistory>

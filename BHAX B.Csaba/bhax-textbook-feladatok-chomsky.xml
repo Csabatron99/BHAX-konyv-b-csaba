@@ -1,21 +1,19 @@
  <chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
-    <info>
-        <title>Helló, Chomsky!</title>
-        <keywordset>
-            <keyword/>
-        </keywordset>
-    </info>
-    <section>
-        <title>Decimálisból unárisba átváltó Turing gép</title>
-        <para>
-            Állapotátmenet gráfjával megadva írd meg ezt a gépet!
-        </para>
-        <para>
-            A megoldáshoz tartozik egy kód, amit konyen lehet vizualizálni és futtatni a kobvetkező linken: <link href="https://turingmachine.io/">https://turingmachine.io/</link>
-
-          A kód pedig a követekező:
-          <programlisting language="turing">
-            <![CDATA[%{
+   <info>
+     <title>Helló, Chomsky!</title>
+     <keywordset>
+       <keyword/>
+     </keywordset>
+   </info>
+   <section>
+     <title>Decimálisból unárisba átváltó Turing gép</title>
+     <para>
+       Állapotátmenet gráfjával megadva írd meg ezt a gépet!
+     </para>
+     <para>
+       Megoldás forrása: az első előadás <link xlink:href="https://arato.inf.unideb.hu/batfai.norbert/UDPROG-BHAX/Prog1_1.pdf">27 fólia</link>.
+     </para>
+<programlisting ><![CDATA[%{
 #https://turingmachine.io/
 input: '12'
 blank: ' '
@@ -71,19 +69,43 @@ table:
 }
 ]]>
           </programlisting>
-        </para>
+      <para>
+      A C beni átírása pedig a következő:  
+      </para>
+      <programlisting language ="c">
+        <![CDATA[
+#include <stdio.h>
+int main()
+{
+	int a, db=0;
+	printf("Adjon meg egy decimalis szamot!\n");
+	scanf("%d", &a);
+	printf("A megadott szam unarisba atvaltva:\n");
+	for (int i = 0; i < a; i++)
+	{
+		printf("|");
+		db++;
+		if (db % 5 == 0) 
+                {
+                	printf(" ");
+                }
+	}
+	printf("\n");
+	return 0;
+}]]>
+      </programlisting>
       
         <para>
           A turing gép vizualizációja:
-            <mediaobject>
-                <imageobject>
-                    <imagedata fileref="img/TuringDecimalTOUniral.png" scale="50" />
-                </imageobject>
-                <textobject>
-                    <phrase>Decimal to Uniral turing gép</phrase>
-                </textobject>
-            </mediaobject>
         </para>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="img/TuringDecimalTOUniral.png" scale="50" />
+          </imageobject>
+          <textobject>
+            <phrase>Decimal to Uniral turing gép</phrase>
+          </textobject>
+        </mediaobject>
         <para>
             Megoldás videó: (Hamarosan)
         </para>
@@ -104,6 +126,14 @@ table:
         <para>
             Mutass be legalább két környezetfüggő generatív grammatikát, amely ezt a nyelvet generálja!
         </para>
+        <para>      
+        A generatív gramatika Noam Chomsky nevéhez kötődik. Úgy vizsgálja a nyelvtant mint az ismeret alapját, hiszen ha
+            nem lenne nyelvtanunk, akkor a tudást nem tudnánk se megörökíteni, se továbbadni. Nézete azt a vállotta, hogy a tudás 
+            és az ismeret többnyire öröklött (generációról generációra terjed), vagyis univerzális (gondolván a gyerekekre, akik 
+            könnyedén elsajátítják anyanyelvüket). A generatív gramatikának négy fő része van: nemterminális jelek, terminális jelek, 
+            helyettesítési/képzési szabályok és mondat/kezdő szimbólumok, illetve három nyelvtan fajtája: környezetfüggő, környezetfüggetlen 
+            és reguláris. Nézzünk meg két példát környezetfüggő leírásra (a nyilak jelölik majd a képzési szabályokat)
+        </para>
         <para>
             Megoldás videó:
         </para>
@@ -111,34 +141,58 @@ table:
             Megoldás forrása:                
         </para>
         <programlisting>
-          <![CDATA[
-			  1.		S  	→   a	B	C
-			  2.		S	→	a	S	B	C
-			  3.	C	B	→	C	Z
-			  4.	C	Z	→	W	Z
-			  5.	W	Z	→	W	C
-			  6.	W	C	→	B	C
-			  7.	a	B	→	a	b
-			  8.	b	B	→	b	b	
-			  9.	b	C	→	b	c
-			  10.	c	C	→	c	c
-			  ]]>
+<![CDATA[
+S, X, Y: „változók” (a nemterminálisok)
+a, b, c: „konstansok” (a terminálisok)
+S → abc, S → aXbc, Xb → bX, Xc → Ybcc, bY → Yb, aY -> aaX, aY → aa (a helyettesítési szabályok)
+S (a mondatszimbólum)
+
+    S (S → aXbc)
+    aXbc (Xb → bX)
+    abXc (Xc → Ybcc)
+    abYbcc (bY → Yb)
+    aabbcc
+
+    S (S → aXbc)
+    aXbc (Xb → bX)
+    abXc (Xc → Ybcc)
+    abYbcc (bY → Yb)
+    aYbbcc (aY -> aaX)
+    aaXbbcc (Xb → bX)
+    aabXbcc (Xb → bX)
+    aabbXcc (Xc → Ybcc)
+    aabbYbccc (bY → Yb)
+    aabYbbccc (bY → Yb)
+    aaYbbbccc (aY → aa)
+    aaabbbccc]]> 
         </programlisting>
+        
         <programlisting>
-          <![CDATA[
-			  1.		S  	→   a	B	C
-			  2.		S	→	a	S	B	C
-			  3.	C	B	→	C	Z
-			  4.	C	Z	→	W	Z
-			  5.	W	Z	→	W	C
-			  6.	W	C	→	B	C
-			  7.	a	B	→	a	b
-			  8.	b	B	→	b	b	
-			  9.	b	C	→	b	c
-			  10.	c	C	→	c	c
-			  11.		S	→	S
-			  ]]>
-      </programlisting>
+<![CDATA[
+A, B, C: „változók” (a nemterminálisok)
+a, b, c: „konstansok” (a terminálisok)
+A → aAB, A → aC, CB → bCc, cB → Bc, C → bc (a képzési szabályok) 
+S (A kezdőszimbólum)
+
+    A (A → aAB)
+    aAB ( A → aC)
+    aaCB (CB → bCc)
+    aabCc (C → bc)
+    aabbcc
+
+    A (A → aAB)
+    aAB ( A → aAB)
+    aaABB ( A → aAB)
+    aaaABBB ( A → aC)
+    aaaaCBBB (CB → bCc)
+    aaaabCcBB (cB → Bc)
+    aaaabCBcB (cB → Bc)
+    aaaabCBBc (CB → bCc)
+    aaaabbCcBc (cB → Bc)
+    aaaabbCBcc (CB → bCc)
+    aaaabbbCccc (C → bc)
+    aaaabbbbcccc]]> 
+        </programlisting>
 
       <para>
             Tanulságok, tapasztalatok, magyarázat...
@@ -157,9 +211,6 @@ table:
         </para>
         <para>
             Megoldás forrása:  
-        </para>
-        <para>
-            Tanulságok, tapasztalatok, magyarázat...
         </para>
       <programlisting>
         <![CDATA[
@@ -226,51 +277,76 @@ int main()
             a feladat lényege, hogy lexert használjunk, azaz óriások vállán álljunk és ne kispályázzunk!
         </para>
         <para>
-            Megoldás videó: <link xlink:href="https://youtu.be/9KnMqrkj_kU">https://youtu.be/9KnMqrkj_kU</link> (15:01-től).
+            Megoldás videó: 
         </para>
         <para>
-            Megoldás forrása: <link xlink:href="Chomsky/realnumber.l">
-                <filename>bhax/thematic_tutorials/bhax_textbook_IgyNeveldaProgramozod/Chomsky/realnumber.l</filename>
-            </link> 
+            Megoldás forrása:<link xlink:href="https://youtu.be/9KnMqrkj_kU">https://youtu.be/9KnMqrkj_kU</link> (15:01-től).
         </para>
-      <programlisting>
-        <![CDATA[Imports System.Console
-			Imports System.Text.RegularExpressions
-			
-			Module MLexer
-				Sub ChomskyLexer()
-					Do
-						Dim be As String = ReadLine()
-						Dim pattern As String = "[0-9]*(\.[0-9]+)?"
-						Dim realnums As Integer = 0
-			
-						be = Regex.Replace(be, pattern, Function(match As Match)
-															If match.Length > 0 Then
-																realnums += 1
-																Return "<real num: " + Convert.ToSingle(match.Value).ToString() + ">" + vbNewLine
-															End If
-															Return match.Value
-														End Function)
-			
-						WriteLine(be)
-						WriteLine(realnums)
-					Loop
-				End Sub
-			End Module
-			]]>
-      </programlisting>
-      <para>
-        A regex alkalmazása különböző dolgok parseolására. A lexerek definíciója és szerepe a programozásban. A VB regex integrációja.
-        Az emberi nyelv szintaktikájának nem-matematikaisága, nem szabályossága.
-        Például: mi a valós szám?
-        -Kell a tizedesvessző előtt szám vagy nem?
-        -Tizedes vessző vagy pont?
-        -Tagolás ezresével?
-        -Ezrenkénti tagolás szóközzel vagy más jellel?
-        -Exponenciális reprezentáció?
-        Mivel működnek a különböző programnyelveket lintelő és parseoló programok, algoritmusok.
-      </para>
-    </section>                     
+        <para>
+            A lexer egy olyan program amelyik megír, összeállít nekünk egy C programot. A lex programok úgymond több részből tevődnek össze, ezeket a részeket %%-al vannak elválasztva egymástól.
+            A mi programunk most 3 részből áll. A programot ezen részletek alapján viszgáljuk meg.
+        </para>
+        <para> 
+            A forráskód megtalálható a következő linken is: <link xlink:href="Chomsky/realnumber.l">../Chomsky/realnumber.l</link>   
+        </para> 
+        <programlisting language="c"><![CDATA[%{
+#include <stdio.h>
+int realnumbers = 0;
+%}
+digit  	[0-9]
+%%]]>
+        </programlisting>
+        <para>
+            A kapcsoszárójelek közötti részt a lexer, úgy ahogy van egy az egyben berakja a C programba. Az első része ismerős a C kódokból, 
+            az <command>include</command>-dal deklaráljuk az stdio header fájlt. Ezután egy deklarálás és egyben egy értékadás jön 
+            (a <varname>realnumber</varname> változó kezdetben a 0-ás értéket kapja). A a <varname>realnumber</varname> változóval azt számoljuk majd, 
+            hogy hány számot olvas be a program. A kapcsoszárójelezett rész után jönnek a definíciók, a mi esetünkben is van egy: a <varname>digit</varname> 
+            nevű definícióval egy szám csoportot adunk meg (0-tól 9-ig tartalmazza a számokat, tehát a számjegyeket tárolja). Szögletes zárójelek között egy 
+            karaktereket tudunk megadni, de mi most mivel számokat irtunk közé, ezért nem karaktereket, hanem számokat fog tárolni. Majd mindezek után, %%-al
+            lezárjuk ezt a részt.
+        </para>
+        
+        <programlisting language="c"><![CDATA[
+{digit}*(\.{digit}+)?	{++realnumbers; 
+    printf("[realnum=%s %f]", yytext, atof(yytext));}
+%%]]>
+        </programlisting>
+        <para>
+            Ebben, a második részben, jelennek meg a fordítási szabályok, ahol már használjuk is a definícióknál megadottakat, tehát egyfajta 
+            használati utasítást adunk meg hozzjuk. A <command>{digit}*</command> azt jelenti, hogy a digitből lehet nulla vagy bármennyi darab. 
+            Az informatikában a "." karakter magában azt jelenti, hogy amit szeretnlnk azt bármilyen karakterre rá lehet illeszteni. De mivel 
+            mi most a lexel azt akarjuk elérni, hogy tokeneket, valós számokat ismerjen fel (tehát olyan formájú számokat, mint például a 3.5, 
+            vagyis szám.szám), ezért a "."-ot le kell védeni, amit a / jel segítségével érjük el. A levédett pont után egy újabb kifejezés következik 
+            (<command>{digit}+</command>), ami azt takarja hogy a pont után is számjegyek jönnek, bármennyi de legalabb egy mindenképp (+). Ha ez a 
+            leírás megegyezik az egyik intup adattal, tehát ha talál egy ilyet, akkor (jön egy utasítássorozat ami {}-ek közé van téve) növeli a 
+            <varname>realnumber</varname> értékét, és ezt kiírja a képernyőre először stringkét (%s), melyet el is tárolunk az yytext-be, majd számként 
+            kiiratjuk (%f), az <function>atof</function> függvénnyel az <varname>yytext</varname>-ben lévő stringet átkonvertáljuk double típusú számmá.
+        </para>
+        
+        <programlisting language="c"><![CDATA[int
+main ()
+{
+ yylex ();
+ printf("The number of real numbers is %d\n", realnumbers);
+ return 0;
+}]]>
+        </programlisting>
+        <para>
+            Az utolsó rész pedig már úgymond maga a tényleges program, ahol meghívjuk az előbb definiált lexikális <function>yylex</function> függvényt, 
+            elemzést és miután ez véget ér, akkor kiiratom a valós számok számát, vagyis a <varname>realnumber</varname> értékét.
+        </para>
+        <para>
+            C forráskód létrehozása: <command>lex -o realnumber.c realnumber.l</command>
+        </para>
+        <para>
+            Fordítás: <command>gcc realnumber.c -o realnumber -lfl</command> 
+        </para>
+        <para>
+            Futtatás: <command>./realnumber</command>
+        </para>
+        
+    </section>
+                     
 
     <section>
         <title>Leetspeak</title>
@@ -285,6 +361,10 @@ int main()
                 <filename>bhax/thematic_tutorials/bhax_textbook_IgyNeveldaProgramozod/Chomsky/l337d1c7.l</filename>
             </link>  
         </para>
+      <para> 
+            A forráskód megtalálható a következő linken is: <link xlink:href="Chomsky/3.5/l33tsp3ak.l">../Chomsky/l33tsp3ak.l</link>   
+        </para>
+
         <programlisting language="c"><![CDATA[%{
   #include <stdio.h>
   #include <stdlib.h>
@@ -341,8 +421,19 @@ int main()
   
 %}
 %%
-.	{
-	  
+]]></programlisting>
+        <para>
+            Pont úgy, mint az előző lexiális elemző feladatban, a program szerkezete, felépítése úgyanaz (a három fő rész). Először is 
+            megadjuk a header fájloka, majd szintén következnek a definíciók. A definícióknál deklarálunk egy <varname>L337SIZE</varname>-ot,
+            ami segítségével meg tudjuk majd határozni az input hosszát. Egy struktúra segítségével 
+            létrehozzuk a ciphert ami megkapja a karaktert (amit majd átír), illetve a négy lehetőséget, stringet (amire majd cseréli). 
+            Majd ebből a struktúrából létrehozunk egy <varname>l337d1c7</varname> nevű tömbböt (nem adjuk meg az elemeit, azt majd a program 
+            megszámol magának), aminek be is adagoljuk az elemeit a struktúra felépítettsége szerint (először a latin betű, majd pedig 
+            a négy lehetőség amire cserélheti a program). Ezzek vége is az program első részének.
+        </para>
+
+        <programlisting language="c">
+<![CDATA[.	{
 	  int found = 0;
 	  for(int i=0; i<L337SIZE; ++i)
 	  {
@@ -371,18 +462,41 @@ int main()
 	     printf("%c", *yytext);	  
 	  
 	}
-%%
-int 
+%%]]>
+        </programlisting>
+        <para>
+            A második részben egy for ciklussal végig megyünk a kapott inputon. Az i-edig (tehár majd rendre mindegyik) 
+            latin karaktert átalakítja kisbetűvé, megkeresi az adott listában, random számot generál neki (körülbelül 0-100 közöttit), 
+            majd az if résznél lévő vizsgálatok alapján (a random számot vizsgálva) dönti el hogy a latin betűnek melyik megfelelőjét írja 
+            ki a négy közül. Ha a random szám kisebb mint 91, akkor az első karaktert választja (az elsőnek a legnagyobb a valószínűsége), 
+            ha 91 és 94 közötti, akkor a második lehetőséget, ha 94 és 97 közötti, akkor harmadik lehetőséget, ha pedig 97-től nagyobb, akkor
+            az utolsó karaktert választja és írja ki.
+        </para>
+
+        <programlisting language="c">
+<![CDATA[int 
 main()
 {
   srand(time(NULL)+getpid());
   yylex();
   return 0;
 }
-]]></programlisting>
+]]>
+        </programlisting>
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+            A program harmadik és egyben utolsó része egy c programrészlet, ahol a <function>yylex()</function> 
+            függvényhívással elindítjuk az input átváltoztatását.
         </para>
+        <para>
+            C forráskód létrehozása: <command>lex -o l33tsp3ak.c l33tsp3ak.l</command>
+        </para>
+        <para>
+            Fordítás: <command>gcc l33tsp3ak.c -o l33tsp3ak -lfl</command> 
+        </para>
+        <para>
+            Futtatás: <command>./l33tsp3ak</command>
+        </para>
+
     </section>                     
 
 
@@ -489,6 +603,38 @@ $(\exists y \forall x (x \text{ prím}) \supset (x<y)) $
 
 $(\exists y \forall x (y<x) \supset \neg (x \text{ prím}))$
 ]]></programlisting>        
+      <programlisting language="tex">
+<![CDATA[$(\forall x \exists y ((x<y)\wedge(y \text{ prím})))$]]>
+        </programlisting> 
+        <para>
+            Minden valós szám estén létezik egy másik olyan valós szám, ami nagyobb tőle és prím (tehát minden számtól
+            van nagyobb prím).
+        </para>
+
+        <programlisting language="tex">
+<![CDATA[ $(\forall x \exists y ((x<y)\wedge(y \text{ prím})\wedge(SSy \text{ prím})))$ ]]>
+        </programlisting>
+        <para>
+            Minden valós szám esetén létezik egy másik olyan valós szám ami nagyobb tőle, prím és a tőle kettővel 
+            nagyobb valós szám is prímszám (tehát véges sok ikerprím van). 
+        </para> 
+
+        <programlisting language="tex">
+<![CDATA[ $(\exists y \forall x (x \text{ prím}) \supset (x<y)) $ ]]>
+        </programlisting>
+        <para>
+            Létezik olyan y valós szám minden x valós szám esetén, hogy ha az x prímszám, 
+            akkor az x kisebb mint az y (tehát véges sok prímszám van).
+        </para> 
+
+        <programlisting language="tex">
+<![CDATA[ $(\exists y \forall x (y<x) \supset \neg (x \text{ prím}))$ ]]>
+        </programlisting> 
+        <para>
+            Létezik olyan y minden x esetén, hogy ha y kisebb mint az x, akkor az x nem prímszám (tehát ugyanaz 
+            mint az előző esteben, vagyis hogy véges sok prímszám van).
+        </para>
+
         <para>
             Megoldás forrása: <link xlink:href="https://gitlab.com/nbatfai/bhax/blob/master/attention_raising/MatLog_LaTeX">https://gitlab.com/nbatfai/bhax/blob/master/attention_raising/MatLog_LaTeX</link>
         </para>
@@ -498,7 +644,6 @@ $(\exists y \forall x (y<x) \supset \neg (x \text{ prím}))$
         </para>
 
         <para>
-          Tanulságok, tapasztalatok, magyarázat...
           First things first: Ragd be LAETX-be 
         </para>
     </section>                                                                                                                                                                            
@@ -513,7 +658,7 @@ $(\exists y \forall x (y<x) \supset \neg (x \text{ prím}))$
         <listitem>
           <para>egész</para>
           <para>
-            decltype(2) a
+            <![CDATA[ int a]]>
           </para>
         </listitem>
         <listitem>
@@ -531,7 +676,7 @@ $(\exists y \forall x (y<x) \supset \neg (x \text{ prím}))$
         <listitem>
           <para>egészek tömbje</para>
           <para>
-            int a[5];
+            <![CDATA[int a[5];]]>
           </para>
         </listitem>
         <listitem>
@@ -543,31 +688,31 @@ $(\exists y \forall x (y<x) \supset \neg (x \text{ prím}))$
         <listitem>
           <para>egészre mutató mutatók tömbje</para>
           <para>
-            int *a[64];
+            <![CDATA[int *a[64];]]>
           </para>
         </listitem>
         <listitem>
           <para>egészre mutató mutatót visszaadó függvény</para>
           <para>
-            int* f();
+            <![CDATA[int* f();]]>
           </para>
         </listitem>
         <listitem>
           <para>egészre mutató mutatót visszaadó függvényre mutató mutató</para>
           <para>
-            int* (*fn)();
+            <![CDATA[int* (*fn)();]]>
           </para>
         </listitem>
         <listitem>
           <para>egészet visszaadó és két egészet kapó függvényre mutató mutatót visszaadó, egészet kapó függvény</para>
           <para>
-            int (*fn(int))(int, int)
+            <![CDATA[int (*fn(int))(int, int)]]>
           </para>
         </listitem>
         <listitem>
           <para>függvénymutató egy egészet visszaadó és két egészet kapó függvényre mutató mutatót visszaadó, egészet kapó függvényre</para>
           <para>
-            int (*(*fn)(int))(int, int)
+            <![CDATA[int (*(*fn)(int))(int, int)]]>
           </para>
         </listitem>
       </itemizedlist>
@@ -651,10 +796,10 @@ $(\exists y \forall x (y<x) \supset \neg (x \text{ prím}))$
             Az utolsó két deklarációs példa demonstrálására két olyan kódot
             írtunk, amelyek összahasonlítása azt mutatja meg, hogy miért 
             érdemes a <command>typedef</command> használata: <link xlink:href="Chomsky/fptr.c">
-                <filename>bhax/thematic_tutorials/bhax_textbook_IgyNeveldaProgramozod/Chomsky/fptr.c</filename>
+                <filename>Chomsky/fptr.c</filename>
             </link>,
             <link xlink:href="Chomsky/fptr2.c">
-                <filename>bhax/thematic_tutorials/bhax_textbook_IgyNeveldaProgramozod/Chomsky/fptr2.c</filename>.
+                <filename>Chomsky/fptr2.c</filename>.
             </link>  
             
         </para>
@@ -744,7 +889,7 @@ main ()
 }
 ]]></programlisting>            
         <para>
-            Nagyon nehéz a functio-pontier-functio.... esatobbi deklarálása amikor iylen sokszor kell alkalmazni.
+            Nagyon nehéz a functio-pontier-functio.... es-atobbi deklarálása amikor iylen sokszor kell alkalmazni.
             Az a jó, hogy sokszor viszont nem kell alkalmazni ezt a módszert mert vagy túlbonyolítaná a dolgokat, vagy mert teljesen felesleges. Olvasni meg megérteni pláne a legnehezebb
             ezért ez a módszer kerülendő.
         </para>

@@ -5,219 +5,331 @@
             <keyword/>
         </keywordset>
     </info>
-    <section>
-        <title>Hangyaszimulációk</title>
-        <para>
-            Írj Qt C++-ban egy hangyaszimulációs programot, a forrásaidról utólag reverse engineering jelleggel
-            készíts UML osztálydiagramot is!
-        </para>
-	
-        <para>
-            Megoldás videó: <link xlink:href="https://bhaxor.blog.hu/2018/10/10/myrmecologist">https://bhaxor.blog.hu/2018/10/10/myrmecologist</link>
-        </para>
-        <para>
-            Megoldás forrása:                
-        </para>
-	<para>
-	Az osztálydiagram:
-	</para>
-	<mediaobject>
-            <imageobject>
-                <imagedata fileref="img/ant.png"/>
-            </imageobject>
+  <section>
+    <title>Hangyaszimulációk</title>
+    <para>
+      Írj Qt C++-ban egy hangyaszimulációs programot, a forrásaidról utólag reverse engineering jelleggel
+      készíts UML osztálydiagramot is!
+    </para>
+    <para>
+      Megoldás videó: <link xlink:href="https://bhaxor.blog.hu/2018/10/10/myrmecologist">https://bhaxor.blog.hu/2018/10/10/myrmecologist</link>
+    </para>
+    <para>
+      Megoldás forrása: <link xlink:href="https://gitlab.com/nbatfai/bhax/-/tree/master/attention_raising%2FMyrmecologist">https://gitlab.com/nbatfai/bhax/-/tree/master/attention_raising%2FMyrmecologist</link>
+    </para>
+
+    <figure>
+      <title>A hangyaszimulációs program UML diagramja</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="img/uml.png" scale="50" />
+        </imageobject>
+        <textobject>
+          <phrase>A hangyaszimulációs program UML diagramja</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+
+    <para>
+      A programunk egy hangyaszimulációs program lesz, mely a hangyáknak egy véletlenszerű mozgását fogja szimulálni.
+      A mozgások egy 2 dimenziós területen fognak történni
+      A program 3 osztályból épül fel, az
+      <link xlink:href="Conway/Myrmecologist/ant.h">
+        <filename>Ant</filename>
+      </link>
+
+      ,
+
+      <link xlink:href="Conway/Myrmecologist/antthread.h">
+        <filename>AntThread</filename>
+      </link>
+
+      és
+
+      <link xlink:href="Conway/Myrmecologist/antwin.h">
+        <filename>AntWin</filename>
+      </link>
+
+      osztályokból, mint azt láthatjuk a fentebbb lévő UML diagrammon is.
+
+    </para>
+
+    <figure>
+      <title>Hangyaszimuláció</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="Conway/hangya.png" scale="30" />
+        </imageobject>
+        <textobject>
+          <phrase>Hangyaszimuláció</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+
+
+
+
+  </section>
+  <section>
+    <title>Java életjáték</title>
+    <para>
+      Írd meg Java-ban a John Horton Conway-féle életjátékot,
+      valósítsa meg a sikló-kilövőt!
+    </para>
+    <para>
+      Megoldás forrása: <link xlink:href="https://regi.tankonyvtar.hu/hu/tartalom/tkt/javat-tanitok-javat/apb.html#conway">https://regi.tankonyvtar.hu/hu/tartalom/tkt/javat-tanitok-javat/apb.html#conway</link>
+    </para>
+
+    <para>
+      Megtalálható a forráskód:   <link xlink:href="Conway/Sejtautomata.java">
+        <filename>Conway/Sejtautomata.java</filename>
+      </link>
+
+
+    </para>
+
+
+    <para>
+
+      A játékunkban egy sejt egy sejttér eleme, a sejt állapota lehet élő vagy halott. A adott időben működő sejttér adott sejtjének állapotát a következő időpillanatban a következő szabályok alapján számolhatjuk ki:
+      -Élő sejt élő marad, ha kettő vagy három élő szomszédja van, különben halott lesz.
+
+      -Halott sejt halott marad, ha három élő szomszédja van, különben élő lesz.
+
+    </para>
+
+    <figure>
+      <title>Életjáték</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="Conway/sejtautomata.png" scale="30" />
+        </imageobject>
+        <textobject>
+          <phrase>Életjáték</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+
+
+
+
+  </section>
+  <section>
+    <title>Qt C++ életjáték</title>
+    <para>
+      Most Qt C++-ban!
+    </para>
+    <para>
+      Megoldás forrása: <link xlink:href="https://bhaxor.blog.hu/2018/09/09/ismerkedes_az_eletjatekkal">https://bhaxor.blog.hu/2018/09/09/ismerkedes_az_eletjatekkal</link>
+    </para>
+    <para>
+      Megoldás videó: a hivatkozott blogba ágyazva.
+    </para>
+    <para>
+      Ez a programunk két osztályból fog állni. A SejtAblak osztályunkban állítjuk be az ablakunk méretét szélesség és magasság szerint, és ugyanígy állítjuk be a cellák méretét is.
+      Ezek a SejtAblak konstruktorában fognak megtörténni
+    </para>
+    <para>
+
+      Az ablak magasságát és szélességét inicializáljuk a paraméterként kapott számokkal
+
+
+      <programlisting language="C++">
+        <![CDATA[
+
+SejtAblak::SejtAblak(int szelesseg, int magassag, QWidget *parent)
+    : QMainWindow(parent)
+{
+    setWindowTitle("A John Horton Conway-féle életjáték");
+
+    this->magassag = magassag;			
+    this->szelesseg = szelesseg;
+
+    cellaSzelesseg = 6;				
+    cellaMagassag = 6;
+
+
+
+]]>
+      </programlisting>
+
+
+      Láthatjuk, hogy a cellák méretétől függően az ablak mérete is változik.
+      A for ciklusokkal a rácson végigmenve a cellákra beállítunk egy-egy boolt,
+      amiből majd látjuk, hogy melyik cella lesz halott és melyik élő sejt.
+
+
+      <programlisting language="C++">
+        <![CDATA[setFixedSize(QSize(szelesseg*cellaSzelesseg, magassag*cellaMagassag)); 
+    racsok = new bool**[2];
+    racsok[0] = new bool*[magassag];
+    for(int i=0; i<magassag; ++i)
+        racsok[0][i] = new bool [szelesseg];
+    racsok[1] = new bool*[magassag];
+    for(int i=0; i<magassag; ++i)
+        racsok[1][i] = new bool [szelesseg];
+
+    racsIndex = 0;
+    racs = racsok[racsIndex];
+    // A kiinduló racs minden cellája HALOTT
+    for(int i=0; i<magassag; ++i)
+        for(int j=0; j<szelesseg; ++j)
+            racs[i][j] = HALOTT;
+    // A kiinduló racsra "ELOlényeket" helyezünk
+    //siklo(racs, 2, 2);
+    sikloKilovo(racs, 5, 60);
+
+
+    eletjatek = new SejtSzal(racsok, szelesseg, magassag, 120, this);
+    eletjatek->start();
+
+}
+]]>
+      </programlisting>
+
+      Miután a SejtSzal konstruktorát meghívjuk, végigvizsgáljuk a sejtek szomszédjait a SejtSzal osztályban lévő szomszedokSzama függvénnyel.
+
+
+
+
+      <programlisting language="C++">
+        <![CDATA[
+int SejtSzal::szomszedokSzama(bool **racs,
+                              int sor, int oszlop, bool allapot) {
+    int allapotuSzomszed = 0;
+    // A nyolcszomszédok végigzongorázása:
+    for(int i=-1; i<2; ++i)
+        for(int j=-1; j<2; ++j)
+            // A vizsgált sejtet magát kihagyva:
+            if(!((i==0) && (j==0))) {
+        // A sejttérbõl szélének szomszédai
+        // a szembe oldalakon ("periódikus határfeltétel")
+        int o = oszlop + j;
+        if(o < 0)
+            o = szelesseg-1;
+        else if(o >= szelesseg)
+            o = 0;
+
+        int s = sor + i;
+        if(s < 0)
+            s = magassag-1;
+        else if(s >= magassag)
+            s = 0;
+
+        if(racs[s][o] == allapot)
+            ++allapotuSzomszed;
+    }
+
+    return allapotuSzomszed;
+}
+]]>
+      </programlisting>
+
+      Majd ezt a függvényt felhasználjuk a következő metódusunkban, amiben az élő szomszédok számát ellenőrízzük és eszerint adunk új értéket a vizsgált cellának.
+
+
+
+      <programlisting language="C++">
+        <![CDATA[
+void SejtSzal::idoFejlodes() {
+
+    bool **racsElotte = racsok[racsIndex];
+    bool **racsUtana = racsok[(racsIndex+1)%2];
+
+    for(int i=0; i<magassag; ++i) { // sorok
+        for(int j=0; j<szelesseg; ++j) { // oszlopok
+
+            int elok = szomszedokSzama(racsElotte, i, j, SejtAblak::ELO);
+
+            if(racsElotte[i][j] == SejtAblak::ELO) {
+                /* Élõ élõ marad, ha kettõ vagy három élõ
+             szomszedja van, különben halott lesz. */
+                if(elok==2 || elok==3)
+                    racsUtana[i][j] = SejtAblak::ELO;
+                else
+                    racsUtana[i][j] = SejtAblak::HALOTT;
+            }  else {
+                /* Halott halott marad, ha három élõ
+             szomszedja van, különben élõ lesz. */
+                if(elok==3)
+                    racsUtana[i][j] = SejtAblak::ELO;
+                else
+                    racsUtana[i][j] = SejtAblak::HALOTT;
+            }
+        }
+    }
+    racsIndex = (racsIndex+1)%2;
+}
+]]>
+      </programlisting>
+
+      Fentebb a lényegesebb részeket emeltem ki, a kód többi része megtalálható a Conway/cppeletjatek mappában:
+
+      <link xlink:href="Conway/cppeletjatek/sejtablak.h">
+        <filename>SejtAblak</filename>
+      </link>
+
+      <link xlink:href="Conway/cppeletjatek/sejtszal.h">
+        <filename>SejtSzal</filename>
+      </link>
+    </para>
+
+    <figure>
+      <title>Életjáték</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="Conway/cppelet.png" scale="40" />
+        </imageobject>
+        <textobject>
+          <phrase>Életjáték</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+
+
+
+  </section>
+  <section>
+    <title>BrainB Benchmark</title>
+    <para>
+    </para>
+    <para>
+      Megoldás videó: initial hack: <link xlink:href="https://www.twitch.tv/videos/139186614">https://www.twitch.tv/videos/139186614</link>
+    </para>
+    <para>
+      Megoldás forrása: <link xlink:href="https://github.com/nbatfai/esport-talent-search">https://github.com/nbatfai/esport-talent-search</link>
+    </para>
+
+    <para>
+
+      A BrainB program tulajdonképpen az embert vizsgálja. Tapasztalhattuk már, hogy különböző játékokban, az irányított karakterünket szem elől veszítjük különböző tényezők hatására.
+      Mint például ha még több karakter gyűlik a miénk köré, esetleg különböző effektek is takarják a láthatóságát közben. Ilyenkor nehéz követni, hogy mi hol is vagyunk, mit csinálunk éppen. A BrainB program pont ezt a képességünket méri. A programban, mint láthatjuk a lentebb lévő képünkön, sok kis négyzet között, melyeknek a közepén egy pont van, egyik a saját négyzetünk.
+
+    </para>
+    <para>
+      A mi feladatunk, hogy azt a négyzetet kövessük az egérmutatónkkal. Erre időlimit van, maximum 10 percig követhetjük a négyzetünket és közben lenyomva kell tartanunk a balegérgombunkat.
+      Végül kapunk egy eredményt abból számítva, hogy hányszor vesztettük el a négyzetünket, mennyire tudtuk követni.
+    </para>
+
+
+
+
+
+    <para>
+
+      <figure>
+        <title>BrainB program és kimenete</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="img/brainb.jpg" scale="50" />
+          </imageobject>
+          <textobject>
+            <phrase>BrainB program és kimenete</phrase>
+          </textobject>
         </mediaobject>
-	<para>
-	A megoldás forrása, illetve az UML osztálydiagram <link xlink:href="https://bhaxor.blog.hu/2018/09/26/hangyaszimulaciok">Bátfai Norbert</link> tulajdona.
-	</para>
-        <para>
-            Ebben a feladatban hangyákat kell szimulálnunk. A megoldás azt a biológiából már ismert tényt használja, hogy a hangyák a való életben szagokkal (feromonokkal) kommunikálnak egymással.
-Ha például egy hangya valamilyen érdekes dolgot talált, akkor ott hagyja a nyomát, illetve megjelöli az útvonalat. Az éppen arra járó többi hangya ezt megérzi, a legfrissebb feromon nyomát követve ők is el fognak jutni a célba. Ezeket felhasználva készítették el ezt a hangyaszimulációt.
-        </para>
-	<para>
-	Az osztálydiagrammon belül négy egységet találhatunk, ezek a következők: Ant; Ants; AntWin; és AntThread.
-	</para>  
-	<para>
-	Ezek a programunk osztályai, ezeken az egységeken belül vannak megadva az adott osztály változói és függvényei is. Ilyen például az AntWin egységen belül található <emphasis>width</emphasis>
-és <emphasis>height</emphasis> változók, amik a képernyő hosszúságát és szélességét adják meg.
-Vagy például a <function>closeEvent()</function> és a <function>keyPressEvent()</function> függvények, amik szintén az AntWin osztály részei. Ezek alapján meghatározhatjuk, hogy az AntWin osztály a szimuláción belül a világot kezeli.
-	</para>    
-	<para>
-	Az AntThread osztály kezeli a hangyákat, mozgásukat, illetve a virtuális feromonok terjedéséért is ez az osztály felelős.
-	</para>
-    </section>        
-    <section>
-        <title>Java életjáték</title>
-        <para>
-            Írd meg Java-ban a John Horton Conway-féle életjátékot, 
-            valósítsa meg a sikló-kilövőt!
-        </para>
-        <para>
-            Megoldás videó: 
-        </para>
-        <para>
-            Megoldás forrása:                
-        </para>
-	<para>
-	A Megoldás forrása <link xlink:href="https://www.tankonyvtar.hu/hu/tartalom/tkt/javat-tanitok-javat/apb.html#conway">Bátfai Norbert</link> tulajdona.
-	</para>
-        <para>
-            Arról, hogy mi az az életjáték, illetve, hogy mik a szabályai, a következő feladat leírásában részletesebben kifejtem. Röviden az életjáték szabályai:
-        </para>            
-	<para>
-	Ha egy négyzetnek pontosan három darab élő szomszédja van, akkor abban a négyzetben egy új sejt jön létre.
-	</para>
-	<para>
-	Ha egy már élő sejtnek pontosan kettő vagy három darab szomszédja van, akkor az a sejt továbbra is életben marad.
-	</para>
-	<para>
-	Ha viszont egy már meglévő élő sejtnek háromnál több élő szomszédja van (túlnépesedés), vagy kettőnél kevesebb, akkor az a sejt meghal. Ezt szimulálja az életjáték.
-	</para>
-	<para>
-	Ezek a szabályok az <function>időFejlődés()</function> függvényben vannak lefektetve.
-	</para>
-	<programlisting>
-	<![CDATA[if(rácsElőtte[i][j] == ÉLŐ) {
-                /* Élő élő marad, ha kettő vagy három élő
-                 szomszedja van, különben halott lesz. */
-                    if(élők==2 || élők==3)
-                        rácsUtána[i][j] = ÉLŐ;
-                    else
-                        rácsUtána[i][j] = HALOTT;
-                }  else {
-                /* Halott halott marad, ha három élő
-                 szomszedja van, különben élő lesz. */
-                    if(élők==3)
-                        rácsUtána[i][j] = ÉLŐ;
-                    else
-                        rácsUtána[i][j] = HALOTT;]]>
-	</programlisting>
-	<para>
-	Igaz ugyan, hogy az életjáték egy úgynevezett nullszemélyes játék, de ebben a példában a játékos mégis tudja irányitani kicsit a dolgokat. Ugyanis a program figyeli a billentyűzet bizonyos gombjait ( k, n ,l ,g ,s ), illetve az egér mozgását, és kattintásait is. Ezt három fügvénnyel teszi. Az <function>addKeyListener(new java.awt.event.KeyAdapter()</function> fügvénnyel figyeli a billentyűzetet. Ezen a függvényen belül egy if-else szerkezet állapitja meg, hogy éppen melyik gombot nyomta le a felhasználó a
-	</para>
+      </figure>
 
-	<programlisting>
-	<![CDATA[if(e.getKeyCode() == java.awt.event.KeyEvent.VK_K){}]]>
-	</programlisting>
-	<para>
-	 feltétel a K betű lenyomását azonosítja, és csökkenti a sejtek méretét.
-	</para>
+    </para>
+  </section>
 
-	<programlisting>
-	<![CDATA[else if(e.getKeyCode() == java.awt.event.KeyEvent.VK_N){}]]>
-	</programlisting>
-	<para>
-	 feltétel az N betű lenyomását azonosítja, és növeli a sejtek méretét.
-	</para>
-
-	<programlisting>
-	<![CDATA[else if(e.getKeyCode() == java.awt.event.KeyEvent.VK_S){}]]>
-	</programlisting>
-	<para>
-	 feltétel az S betű lenyomását azonosítja, és készít egy képet a sejttérről.
-	</para>
-
-	<programlisting>
-	<![CDATA[else if(e.getKeyCode() == java.awt.event.KeyEvent.VK_G)]]>
-	</programlisting>
-	<para>
-	 feltétel a G betű lenyomását azonosítja, gyorsítja a szimuláció sebességét.
-	</para>
-
-	<programlisting>
-	<![CDATA[else if(e.getKeyCode() == java.awt.event.KeyEvent.VK_L]]>
-	</programlisting>
-	<para>
-	 feltétel az L betű lenyomását azonosítja, és lassítja a szimuláció sebességét.
-	</para>
-
-	<para>
-	Az egér mozgását, illetve kattintásait pedig a <function>addMouseListener(new java.awt.event.MouseAdapter(){}</function> illetve a <function>addMouseMotionListener(new java.awt.event.MouseMotionAdapter(){}</function> függvények figyelik. Az egér kattintásaival egy sejt állapotát tudjuk megváltoztatni. Az egér mozgatásával pedig az összes érintett sejt élő állapotba kerül.
-	</para>
-
-    </section>        
-    <section>
-        <title>Qt C++ életjáték</title>
-        <para>
-            Most Qt C++-ban!
-        </para>
-        <para>
-            Megoldás videó: 
-        </para>
-        <para>
-            Megoldás forrása:                
-        </para>
-	<para>
-	A megoldás forrása <link xlink:href="https://sourceforge.net/p/udprog/code/ci/master/tree/source/labor/Qt/Sejtauto/">Bátfai Norbert</link> tulajdona.
-	</para>
-        <para>
-	Az életjátékot John Conway találta ki, és nem teljesen hiteles rá a játék kifejezés, mert ez egy úgynevezett nullszemélyes játék. Magának a játékosnak annyi a dolga, hogy megadja a kezdőalakzatot, majd pedig megfigyelheti, hogy mi lesz az eredmény.
-	</para>
-	<para>
-	Alapja egy négyzetrácsos tér, amikben élhetnek sejtek, de minden egyes négyzetben csak egy darab sejt élhet. A játék szabályai a következők:
-	</para>
-	<para>
-	Ha egy sejtnek kettő vagy három élő szomszédos sejtje van, akkor a sejt meg fogja élni a következő generációt. Az összes többi esetben viszont kihal a sejt, akár azért mert túl sok, akár azért mert túl kevés szomszédja van.
-	</para>
-	<para>
-	Ahol azonban egy üres négyzetrácsnak pontosan három élő sejt a szomszédja, akkor ott új sejt jön létre.
-	</para>
-	<para>
-	Érdekes az, hogy milyen hatást váltott ki az emberekből. Voltak akik napi rutinjukká tették azt, hogy az életjátékkal "játszanak", egyfajta függők lettek, és voltak azok, akik nem értették hogy mi a jó benne.
-	</para> 
-	<para>
-	Maga a program ugyanúgy működik, mint a java verzió. Mind a két program két darab mátrixxal dolgozik, viszont itt a teljes kód megirása helyett a Q-t is segítségül hívjuk.
-	</para>      
-	<para>
-	A programot a következőképpen tudjuk fordítani és futtatni:
-	<command>qmake Sejtauto.pro</command>
-	<command>make</command>
-	<command>./Sejtauto</command>
-	</para>
-    </section>        
-    <section>
-        <title>BrainB Benchmark</title>
-        <para>
-        </para>
-        <para>
-            Megoldás videó: 
-        </para>
-        <para>
-            Megoldás forrása:                
-        </para>
-	<para>
-	A megoldás forrása <link xlink:href="https://github.com/nbatfai/esport-talent-search">Bátfai Norbert</link> tulajdona.
-	</para>
-	<para>
-	A programhoz szükségünk lesz az OpenCV-re, aminek a feltelepitéséhez a lépéseket <link xlink:href="https://www.learnopencv.com/install-opencv3-on-ubuntu/?fbclid=IwAR37_YdNsNE-r79VDJSDTNAoZIHDQOL0ayeN33PkrC-Gyfq89lCby7bTtEo">ezen a linken</link> elérhető weblapon találjuk.
-	</para>
-        <para>
-            Ez egy miniatűr játék, ami a felhasználó szem-kéz koordinációjáról, illetve a megfigyelőképességéről gyűjt össze információkat.
-        </para>
-	<para>
-	Amikor elindítjuk a játékot akkor egy ablak fogad minket, és a lényege az, hogy a <command>Samu enthropy</command> nevű négyzeten belül lévő fekete pöttyön belül tartsuk az egerünk mutatóját.
-	</para>
-	<para>
-	A játék a teljesitményünk alapján lesz könnyebb, vagy nehezebb. Minél jöbban játszunk, annál több Enthropy lesz a képernyőn, ezáltal megnehezítve a Samu enthropy követését. Viszont ha már nem tudjuk nyomon követni a Samu enthropy-t akkor folyamatosan eltünteti a hozzáadott enthropy-kat, ezáltal megkönnyítve a játékot.
-	</para>
-	
-	<para>
-	A programot futtatni az előző feladathoz hasonlóan szintén a <command>qmake</command> és <command>make</command> parancsokkal lehet forditani.
-	</para> 
-    </section> 
-
-	<section>
-        <title>Vörös Pipacs Pokol/19 RF</title>
-        <para>
-            Megoldás videó: <link xlink:href="https://youtu.be/VP0kfvRYD1Y">https://youtu.be/VP0kfvRYD1Y</link>      
-        </para>
-        <para>
-            Megoldás forrása:               
-        </para>
-        <para>
-            A Red Flower Hell II. körében a célunk ugyanaz mint eddig volt: a lehető legtöbb pipcsaot gyűjteni, amíg a láva leér az aréna aljába. Azonban az első körhöz képest néhány változtatást hozott Tanár Úr a szabályokban: tilos az XML fájl adatait felhasználni, tilos abszolút mozgási formát használni, tilos játékmódot változtatni, tilos az XML fájlt változtatni és tilos átvenni az egér fölött az irányítást.
-        </para>            
-    </section>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
-
-       
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
 </chapter>                

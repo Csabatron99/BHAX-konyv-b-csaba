@@ -1,6 +1,6 @@
 <chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
     <info>
-        <title>Helló, Mandelbrot!</title>
+        <title>Helló, Mandelbrot! Teszt</title>
         <keywordset>
             <keyword/>
         </keywordset>
@@ -16,41 +16,69 @@
                 <filename>bhax/attention_raising/CUDA/mandelpngt.c++</filename>
             </link> nevű állománya.            
         </para>
-                <figure>
-            <title>A Mandelbrot halmaz a komplex síkon</title>
-            <mediaobject>
-                <imageobject>
-                    <imagedata fileref="img/mandel.png" scale="50" />
-                </imageobject>
-                <textobject>
-                    <phrase>A Mandelbrot halmaz a komplex síkon</phrase>
-                </textobject>
-            </mediaobject>
-        </figure>
-        <para>
-            A Mandelbrot halmazt 1980-ban találta meg Benoit Mandelbrot a 
-            komplex számsíkon. Komplex számok azok a számok, amelyek körében 
-            válaszolni lehet az olyan egyébként értelmezhetetlen kérdésekre, 
-            hogy melyik az a két szám, amelyet összeszorozva -9-et kapunk, 
-            mert ez a szám például a 3i komplex szám.
-        </para>
-<para>  
-            <programlisting language="c++"><![CDATA[
+      <para>
+        Az ebben a fejezetben szereplő programok, mind szervesen kötődnek egymáshoz. Ha sikerül egy képet megcsinálni
+        akkor az összes programot át tudjuk rá ültetni, tehát egy másik programváltozattal tudunk benne majd nagyítani,
+        vagy úgy is át tudjuk majd írni, hogy a GPU-t használja, ezáltal nagyon meggyorsítva a számítási folyamatokat.
+      </para>
+      <para>
+        A forráskód megtalálható a következő linken is: <link xlink:href="Mandelbrot/mandelpngt.cpp">../Mandelbrot/mandelpngt.cpp</link>
+      </para>
+      <programlisting language="c++">
+        <![CDATA[// mandelpngt.c++
+// Copyright (C) 2019
+// Norbert Bátfai, batfai.norbert@inf.unideb.hu
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
+// Version history
+//
+//  Mandelbrot png
+//  Programozó Páternoszter/PARP
+//   https://www.tankonyvtar.hu/hu/tartalom/tamop412A/2011-0063_01_parhuzamos_prog_linux
+//
+//  https://youtu.be/gvaqijHlRUs
+//
 #include <iostream>
 #include "png++/png.hpp"
 #include <sys/times.h>
+
 #define MERET 600
-#define ITER_HAT 32000
-void
+#define ITER_HAT 32000]]>
+      </programlisting>
+      <para>
+        A program elején, mint mindig, megadjuk a header fájlokat. Ez esetben ami ismeretlen lehet az a png++/png.hpp
+        és a sys/times.h fejlécek. Az elsőre azért van szükségünk, hogy létre tudjuk hozni a képet, hogy viziálisan
+        is láthassuk a Mandelbrot halmaz eredményét, ami kép. A második header fájl pedig az idővel kapcsolatos számításokat,
+        az idővel összefüggő függvények meghívását biztosítja számunkra. Idlletve efiníciő megadaások is szerepelnek,
+        melyek majd könnyítik a dolgunkat a program írása alatt.
+      </para>
+
+      <programlisting language="c++">
+        <![CDATA[void
 mandel (int kepadat[MERET][MERET]) {
-    //Mérünk időt (PP 64)
+
+    // Mérünk időt (PP 64)
     clock_t delta = clock ();
-    //Mérünk időt (PP 66)
+    // Mérünk időt (PP 66)
     struct tms tmsbuf1, tmsbuf2;
     times (&tmsbuf1);
+
     // számítás adatai
     float a = -2.0, b = .7, c = -1.35, d = 1.35;
     int szelesseg = MERET, magassag = MERET, iteraciosHatar = ITER_HAT;
+
     // a számítás
     float dx = (b - a) / szelesseg;
     float dy = (d - c) / magassag;
@@ -59,10 +87,10 @@ mandel (int kepadat[MERET][MERET]) {
     int iteracio = 0;
     // Végigzongorázzuk a szélesség x magasság rácsot:
     for (int j = 0; j < magassag; ++j)
-    {
+        {
         //sor = j;
         for (int k = 0; k < szelesseg; ++k)
-        {
+            {
             // c = (reC, imC) a rács csomópontjainak
             // megfelelő komplex szám
             reC = a + k * dx;
@@ -79,111 +107,104 @@ mandel (int kepadat[MERET][MERET]) {
             // az iteráció konvergens, azaz a c a
             // Mandelbrot halmaz eleme
             while (reZ * reZ + imZ * imZ < 4 && iteracio < iteraciosHatar)
-            {
+                {
                 // z_{n+1} = z_n * z_n + c
                 ujreZ = reZ * reZ - imZ * imZ + reC;
                 ujimZ = 2 * reZ * imZ + imC;
                 reZ = ujreZ;
                 imZ = ujimZ;
                 ++iteracio;
-            }
+                }
+
             kepadat[j][k] = iteracio;
+            }   
         }
-    }
-    times (&tmsbuf2);
-    std::cout << tmsbuf2.tms_utime - tmsbuf1.tms_utime
-              + tmsbuf2.tms_stime - tmsbuf1.tms_stime << std::endl;
-    delta = clock () - delta;
-	  std::cout << (float) delta / CLOCKS_PER_SEC << " sec" << std::endl;
-}
-int
+
+        times (&tmsbuf2);
+        std::cout << tmsbuf2.tms_utime - tmsbuf1.tms_utime
+        + tmsbuf2.tms_stime - tmsbuf1.tms_stime << std::endl;
+
+        delta = clock () - delta;
+        std::cout << (float) delta / CLOCKS_PER_SEC << " sec" << std::endl;
+
+        }]]>
+      </programlisting>
+      <para>
+        A <function>mandel</function> függvény az ami majd kiszámolja nekünk a Mandelbrot halmazt. Egy időszámítás jön,
+        ami segítségével majd a program lefutás után kiírja azt az időt amit igénybe vett a számolás (az én
+        gépen és egy i3-3227U-s processzor esetén ez körülbelül egy 15 másodpercbe telt). Ezek és a
+        változódeklarálások után jöhetnek a nagyobb számítások. Létrehozunk egy dx szélességű és dy magasságú
+        rácsot a két egymásbaágyazódó for ciklus segítségével, majd megvizsgáljuk, hogy a <varname>c</varname> komplex szám (mely megkapja a <varname>reC</varname>
+        és a <varname>imC</varname> értékek által meghatározott pontot, pixelt) benne van-e a Mandelbrot halmazban,
+        ha igen akkor azt a pontot beszinezi.
+      </para>
+
+      <programlisting language="c++">
+        <![CDATA[int
 main (int argc, char *argv[])
 {
+
     if (argc != 2)
     {
         std::cout << "Hasznalat: ./mandelpng fajlnev";
         return -1;
     }
+
     int kepadat[MERET][MERET];
+
     mandel(kepadat);
+
     png::image < png::rgb_pixel > kep (MERET, MERET);
+
     for (int j = 0; j < MERET; ++j)
     {
         //sor = j;
         for (int k = 0; k < MERET; ++k)
         {
             kep.set_pixel (k, j,
-                           png::rgb_pixel (255 -
-                                           (255 * kepadat[j][k]) / ITER_HAT,
-                                           255 -
-                                           (255 * kepadat[j][k]) / ITER_HAT,
-                                           255 -
-                                           (255 * kepadat[j][k]) / ITER_HAT));
+            png::rgb_pixel (255 -
+            (255 * kepadat[j][k]) / ITER_HAT,
+            255 -
+            (255 * kepadat[j][k]) / ITER_HAT,
+            255 -
+            (255 * kepadat[j][k]) / ITER_HAT));
         }
     }
+
     kep.write (argv[1]);
     std::cout << argv[1] << " mentve" << std::endl;
-}
-]]>
-</programlisting> 
-</para>
+}]]>
+      </programlisting>
+      <para>
+        A főprogram elején megvizsgáljuk, hogy a felhasználó jól hsználta-e a futtatási parancsot, tehát hogyha a parancs nem két
+        argumentumból áll, akkor kiírunk egy hibaüzenetet a kimenetre. A <varname>kepadat</varname> változóba bekérjük a méreteket,
+        tehát a kép szélességét és a magasságát majd ezeket átadjuk a <function>mandel</function> függvénynek, ami kiszámolja nekünk
+        a mandelbrot halmazt, és ez alapján megalkotjuk a png kiterjesztésű képet. Miutána  program befejezte a számításokat és
+        sikeresen megcsinálta a képet, kiírja a kimenetre a "mentve" üzenetet a felhasználó számára, tudatva a sikert.
+      </para>
 
-        <para>             
-            A Mandelbrot halmazt úgy láthatjuk meg, hogy a sík origója középpontú 4 
-            oldalhosszúságú négyzetbe lefektetünk egy, mondjuk 800x800-as 
-            rácsot és kiszámoljuk, hogy a rács pontjai mely komplex számoknak 
-            felelnek meg. A rács minden pontját megvizsgáljuk a 
-            z<subscript>n+1</subscript>=z<subscript>n</subscript>
-            <superscript>2</superscript>+c, 
-            (0&lt;=n) képlet alapján úgy, hogy a c az éppen vizsgált rácspont. 
-            A z0 az origó. Alkalmazva a képletet a 
-        </para>
-        <itemizedlist>
-            <listitem>
-                <para>
-                    z<subscript>0</subscript> = 0
-                </para>
-            </listitem>
-            <listitem>
-                <para>
-                    z<subscript>1</subscript> = 0<superscript>2</superscript>+c = c
-                </para>
-            </listitem>
-            <listitem>
-                <para>
-                    z<subscript>2</subscript> = c<superscript>2</superscript>+c
-                </para>
-            </listitem>
-            <listitem>
-                <para>
-                    z<subscript>3</subscript> = (c<superscript>2</superscript>+c)<superscript>2</superscript>+c
-                </para>
-            </listitem>
-            <listitem>
-                <para>
-                    z<subscript>4</subscript> = ((c<superscript>2</superscript>+c)<superscript>2</superscript>+c)<superscript>2</superscript>+c
-                </para>
-            </listitem>
-            <listitem>
-                <para>
-                    ... s így tovább.
-                </para>
-            </listitem>
-        </itemizedlist>
-        <para>
-            Azaz kiindulunk az origóból (z<subscript>0</subscript>) 
-            és elugrunk a rács első pontjába a z<subscript>1</subscript> = c-be, 
-            aztán a c-től függően a további z-kbe. Ha ez az utazás kivezet a 
-            2 sugarú körből, akkor azt mondjuk, hogy az a vizsgált rácspont 
-            nem a Mandelbrot halmaz eleme. Nyilván nem tudunk végtelen sok 
-            z-t megvizsgálni, ezért csak véges sok z elemet nézünk meg minden 
-            rácsponthoz. Ha eközben nem lép ki a körből, akkor feketére 
-            színezzük, hogy az a c rácspont a halmaz része. (Színes meg úgy 
-            lesz a kép, hogy változatosan színezzük, például minél későbbi 
-            z-nél lép ki a körből, annál sötétebbre). 
-        </para>       
-        <para>        
-        </para>
+      <para>
+        Fordítás: <command>g++ mandelpngt.cpp -lpng -O3 -omandelpngt</command>
+      </para>
+      <para>
+        Futtatás: <command>./mandelpngt mt.png</command>
+      </para>
+      <para>
+        Kép megnyitása terminálból: <command>eog mt.png</command>
+      </para>
+      <figure>
+        <title>A kiadott kép</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="Mandelbrot/mt.png" scale="50" />
+          </imageobject>
+          <textobject>
+            <phrase>A kiadott kép</phrase>
+          </textobject>
+        </mediaobject>
+      </figure>
+
+
 
     </section>        
         
@@ -201,11 +222,24 @@ ismert algoritmust valósítja meg a repó <link xlink:href="../../../bhax/atten
                 <filename>bhax/attention_raising/Mandelbrot/3.1.2.cpp</filename>
             </link> nevű állománya.
         </para>
-        <para>
-Ez a feladat olyan , mint az előző, néhány kissebb eltérés kivételével. Például a egy változóban fogjuk eltárolni a komplex számokat. De a lényeg itt is ugyan az. Megalkotunk egy üres png fájlt, és itt is két for ciklus segítségével beállítjuk a kívánt értékekre a kép pixeleit.
-</para>
-        <programlisting language="c++">
-<![CDATA[// Verzio: 3.1.2.cpp
+      <para>
+        Felvetődik egy kérdés: melyikaz a szám amelyiket önmagával megszorozva 9-et kapunk (természetesen ez a 3).
+        Ebből kiindulva a következő kérdés pedig az, hogy melyik az a szám amit ha megszorozunk önmagával -9-et kapunk?
+        Ez pedig már nem lehetséges a valós számhalmazon, így jönnek képbe a komplex számok, melyek úgymond a valós
+        számhalmaz továbbővítése. A komplex számok alapja az "i" szám, melynek értéke a sqrt(-1), ennek a segítségével
+        el lehet végezni a negatív számból való négyzetgyökvonást. Így már meg tudjuk válaszolni az előbb feltett kérdést,
+        az "i" szám segítségével már ki tudjuk hozni a -9-et (tehát 3i*3i).
+      </para>
+      <para>
+        Ez a program és az előző közötti legnagyobb kölönbség az hogy a <varname>c</varname> amit vizsgálunk, hogy benne van-e
+        a Mandelbrot halmazban, az előző programban egy változó, ebben pedig egy állandó. Így itt a c a rács minden
+        vizsgálandó pontját befutja.
+      </para>
+      <para>
+        A forráskód megtalálható a következő linken is: <link xlink:href="Mandelbrot/mandelbrotcomplex.cpp">../Mandelbrot/mandelbrotcomplex.cpp</link>
+      </para>
+      <programlisting language="c++">
+        <![CDATA[// Verzio: 3.1.2.cpp
 // Forditas:
 // g++ 3.1.2.cpp -lpng -O3 -o 3.1.2
 // Futtatas:
@@ -231,12 +265,16 @@ Ez a feladat olyan , mint az előző, néhány kissebb eltérés kivételével. 
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+
 #include <iostream>
 #include "png++/png.hpp"
 #include <complex>
+
 int
 main ( int argc, char *argv[] )
 {
+
   int szelesseg = 1920;
   int magassag = 1080;
   int iteraciosHatar = 255;
@@ -244,6 +282,7 @@ main ( int argc, char *argv[] )
   double b = 0.7;
   double c = -1.3;
   double d = 1.3;
+
   if ( argc == 9 )
     {
       szelesseg = atoi ( argv[2] );
@@ -255,45 +294,103 @@ main ( int argc, char *argv[] )
       d = atof ( argv[8] );
     }
   else
-    {
+    {        
       std::cout << "Hasznalat: ./3.1.2 fajlnev szelesseg magassag n a b c d" << std::endl;
       return -1;
-    }
-  png::image < png::rgb_pixel > kep ( szelesseg, magassag );
+    }]]>
+      </programlisting>
+      <para>
+        A program elején a header fájlok deklarálása után (iostream, a cin, cout miatt főleg; png++/png.hpp,
+        a kép létrehozása miatt; complex, a komplex iterációk és ahogy a címben is említve van a komplex osztályos megoldás miatt) jönnek a változók deklarálása, ezek a változók
+        (<varname>szelesseg</varname>, <varname>magassag</varname>, <varname>iteraciosHatar</varname>, <varname>a</varname>,
+        <varname>b</varname>, <varname>c</varname> és <varname>d</varname>) a futtaási parancsban is fontos szerepet
+        játszanak hiszen az első két argumentum után (ami a ./futtató fájl neve illetve egy png féjlnév, ami a mentett kép
+        neve lesz) ahogy deklarálva vannak, úgynilyen sorrenbe vannak megadva szóközzel elválasztva egymástól. Miután a változók
+        deklarálva lettek, megvizsgéljuk hogy a felhasználó jól futtat-e a programot, tehét hogyha a parans 9 argumentumból áll
+        akkor megadjuk a programban, hogy az egyes változók hányadik értéket kapják meg a parancsból, tehát hogy a program tudja
+        hogy az egyes értékek mit jelentenek számára. Ha vizsont a parancs nem 9 argumentumból áll, akkor kiíratunk az outputra
+        egy üzenetet a felhasználónak, hogy tudja a helyes futtatási használatot, <command>return -1</command>-el pedig az
+        operációs rendszernek is jelezzük a hibát.
+      </para>
+
+      <programlisting language="c++">
+        <![CDATA[  png::image < png::rgb_pixel > kep ( szelesseg, magassag );
+
   double dx = ( b - a ) / szelesseg;
   double dy = ( d - c ) / magassag;
   double reC, imC, reZ, imZ;
   int iteracio = 0;
+
   std::cout << "Szamitas\n";
-  // j megy a sorokon
+
   for ( int j = 0; j < magassag; ++j )
     {
-      // k megy az oszlopokon
       for ( int k = 0; k < szelesseg; ++k )
         {
-          // c = (reC, imC) a halo racspontjainak
-          // megfelelo komplex szam
           reC = a + k * dx;
           imC = d - j * dy;
           std::complex<double> c ( reC, imC );
+
           std::complex<double> z_n ( 0, 0 );
           iteracio = 0;
+
           while ( std::abs ( z_n ) < 4 && iteracio < iteraciosHatar )
             {
               z_n = z_n * z_n + c;
+
               ++iteracio;
             }
+
           kep.set_pixel ( k, j,
                           png::rgb_pixel ( iteracio%255, (iteracio*iteracio)%255, 0 ) );
         }
+
       int szazalek = ( double ) j / ( double ) magassag * 100.0;
       std::cout << "\r" << szazalek << "%" << std::flush;
     }
+
   kep.write ( argv[1] );
   std::cout << "\r" << argv[1] << " mentve." << std::endl;
+
 }
 ]]>
-        </programlisting>        
+      </programlisting>
+      <para>
+        A számítások részben deklaráljuk a <varname>reC</varname>, <varname>imC</varname>, <varname>reZ</varname>
+        és <varname>imZ</varname> (valós és imaginárius részű) változókat, melyekből már látszik is hogy a feladatban
+        sokszerepet fognak játszani a komplex számok. A c=(reC, imC) a haló rácspontjainak megfelelő aktualis pont
+        Úgyanúgy mint az előző programban a két for ciklus segítségével megcsináljuk a rácsot, elindulunk az
+        origóban majd egy <varname>c</varname> pontra ugrunk a c<superscript>2</superscript>+c majd ez az egesz a
+        négyzeten +c és így tovább. Ha sikeres volt minden művelet, akkor kiíratunk a standard kimenetre egy "mentve"
+        üzenetet, melyből a felhasználó tudja is hogy a kép sikeresen el lett készítve, lehet megtekinteni.
+      </para>
+      <para>
+        Fordítás: <command>g++ mandelbrotcomplex.cpp -lpng -O3 -o mandelbrotcomplex</command>
+      </para>
+      <para>
+        Futtatás: <command>
+          ./mandelbrotcomplex mandelcomplex.png 1920 1080 1020
+          0.4127655418209589255340574709407519549131
+          0.4127655418245818053080142817634623497725
+          0.2135387051768746491386963270997512154281
+          0.2135387051804975289126531379224616102874
+        </command>
+      </para>
+      <para>
+        Kép megnyitása terminálból: <command>eog mandelcomplex.png</command>
+      </para>
+      <figure>
+        <title>A program áltak megcsinált kép</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="Mandelbrot/mandelcomplex.png" scale="20" />
+          </imageobject>
+          <textobject>
+            <phrase>A program áltak megcsinált kép</phrase>
+          </textobject>
+        </mediaobject>
+      </figure>
+
     </section>        
                 
     <section>
@@ -303,72 +400,25 @@ main ( int argc, char *argv[] )
         <para>
             Megoldás forrása: <link xlink:href="https://gitlab.com/nbatfai/bhax/tree/master/attention_raising/Biomorf">https://gitlab.com/nbatfai/bhax/tree/master/attention_raising/Biomorf</link>
         </para>
-        <para>
-            A biomorfokra (a Julia halmazokat rajzoló bug-os programjával) 
-            rátaláló Clifford Pickover azt hitte természeti törvényre 
-            bukkant: <link xlink:href="https://www.emis.de/journals/TJNSA/includes/files/articles/Vol9_Iss5_2305--2315_Biomorphs_via_modified_iterations.pdf">https://www.emis.de/journals/TJNSA/includes/files/articles/Vol9_Iss5_2305--2315_Biomorphs_via_modified_iterations.pdf</link> (lásd a 2307. oldal aljától).
-        </para>       
-        <para>
-            A különbség a <link xlink:href="#bhax-textbook-feladatok-mandelbrot.Mandelbrot">Mandelbrot halmaz</link>
-            és a Julia halmazok között az, hogy a komplex iterációban az előbbiben a c változó, utóbbiban pedig állandó. 
-            A következő Mandelbrot csipet azt mutatja, hogy a c befutja a vizsgált összes rácspontot.
-        </para>       
-        <programlisting language="c++">
-<![CDATA[  // j megy a sorokon
-  for ( int j = 0; j < magassag; ++j )
-    {
-      for ( int k = 0; k < szelesseg; ++k )
-        {
-          // c = (reC, imC) a halo racspontjainak
-          // megfelelo komplex szam
-          reC = a + k * dx;
-          imC = d - j * dy;
-          std::complex<double> c ( reC, imC );
-          std::complex<double> z_n ( 0, 0 );
-          iteracio = 0;
-          while ( std::abs ( z_n ) < 4 && iteracio < iteraciosHatar )
-            {
-              z_n = z_n * z_n + c;
-              ++iteracio;
-            }
-]]>
-        </programlisting>        
-        <para>
-            Ezzel szemben a Julia halmazos csipetben a cc nem változik, hanem minden vizsgált
-            z rácspontra ugyanaz.
-        </para>
-        <programlisting language="c++">
-<![CDATA[    // j megy a sorokon
-    for ( int j = 0; j < magassag; ++j )
-    {
-        // k megy az oszlopokon
-        for ( int k = 0; k < szelesseg; ++k )
-        {
-            double reZ = a + k * dx;
-            double imZ = d - j * dy;
-            std::complex<double> z_n ( reZ, imZ );
-            int iteracio = 0;
-            for (int i=0; i < iteraciosHatar; ++i)
-            {
-                z_n = std::pow(z_n, 3) + cc;
-                if(std::real ( z_n ) > R || std::imag ( z_n ) > R)
-                {
-                    iteracio = i;
-                    break;
-                }
-            }
-]]>
-        </programlisting>                         
-        
-        <para>
-            A bimorfos algoritmus pontos megismeréséhez ezt a cikket javasoljuk: 
-            <link xlink:href="https://www.emis.de/journals/TJNSA/includes/files/articles/Vol9_Iss5_2305--2315_Biomorphs_via_modified_iterations.pdf">https://www.emis.de/journals/TJNSA/includes/files/articles/Vol9_Iss5_2305--2315_Biomorphs_via_modified_iterations.pdf</link>.
-            Az is jó gyakorlat, ha magából ebből a cikkből from scratch kódoljuk be a sajátunkat, de mi a királyi úton járva a 
-            korábbi <link xlink:href="#bhax-textbook-feladatok-mandelbrot.Mandelbrot">Mandelbrot halmazt</link> kiszámoló 
-            forrásunkat módosítjuk. Viszont a program változóinak elnevezését összhangba hozzuk a közlemény jelöléseivel:
-        </para>       
-        <programlisting language="c++">
-<![CDATA[// Verzio: 3.1.3.cpp
+      <para>
+        A bimorfos algoritmus pontos megismeréséhez ezt a cikket javasoljuk:
+        <link xlink:href="https://www.emis.de/journals/TJNSA/includes/files/articles/Vol9_Iss5_2305--2315_Biomorphs_via_modified_iterations.pdf">https://www.emis.de/journals/TJNSA/includes/files/articles/Vol9_Iss5_2305--2315_Biomorphs_via_modified_iterations.pdf</link>.
+        Az is jó gyakorlat, ha magából ebből a cikkből from scratch kódoljuk be a sajátunkat, de mi a királyi úton járva a
+        korábbi <link xlink:href="#bhax-textbook-feladatok-mandelbrot.Mandelbrot">Mandelbrot halmazt</link> kiszámoló
+        forrásunkat módosítjuk. Viszont a program változóinak elnevezését összhangba hozzuk a közlemény jelöléseivel:
+      </para>
+      <para>
+        A cikkben arról olvashatunk, hogy Pickover amikor felfedezte a biomorfokat, teljesen meg volt győződve
+        arról hogy felfedezte a természet törvényeit, tehát hogy hogyan néznek ki és alakulnak ki az élő orgazmusok.
+        A cikkben látjuk azt is, hogy a különböző képeket különböző függvények segítségével hozunk létre, hasonlóan a Mandelbrot
+        halmazhoz, elindul a rácson és azon végzi el a képhez tartozó függvényt. A program a komplex számsíkon dolgozik,
+        tehát van "i" számunk, és a c egy állandó .Próbáljuk ki és nézzük meg hogy hogy is mülködik a program.
+      </para>
+      <para>
+        A forráskód megtalálható a következő linken is: <link xlink:href="Mandelbrot/biomorfok.cpp">../Mandelbrot/biomorfok.cpp</link>
+      </para>
+      <programlisting language="c++">
+        <![CDATA[// Verzio: 3.1.3.cpp
 // Forditas:
 // g++ 3.1.3.cpp -lpng -O3 -o 3.1.3
 // Futtatas:
@@ -398,12 +448,15 @@ main ( int argc, char *argv[] )
 // https://youtu.be/IJMbgRzY76E
 // See also https://www.emis.de/journals/TJNSA/includes/files/articles/Vol9_Iss5_2305--2315_Biomorphs_via_modified_iterations.pdf
 //
+
 #include <iostream>
 #include "png++/png.hpp"
 #include <complex>
+
 int
 main ( int argc, char *argv[] )
 {
+
     int szelesseg = 1920;
     int magassag = 1080;
     int iteraciosHatar = 255;
@@ -413,6 +466,7 @@ main ( int argc, char *argv[] )
     double ymax = 1.3;
     double reC = .285, imC = 0;
     double R = 10.0;
+
     if ( argc == 12 )
     {
         szelesseg = atoi ( argv[2] );
@@ -425,29 +479,49 @@ main ( int argc, char *argv[] )
         reC = atof ( argv[9] );
         imC = atof ( argv[10] );
         R = atof ( argv[11] );
+
     }
     else
     {
         std::cout << "Hasznalat: ./3.1.2 fajlnev szelesseg magassag n a b c d reC imC R" << std::endl;
         return -1;
-    }
-    png::image < png::rgb_pixel > kep ( szelesseg, magassag );
+    }]]>
+      </programlisting>
+      <para>
+        Header fájlként megadjuk a képkészítéshez a png++/png.hpp fejlécet, majd ami új az pedig a complex header fájl
+        ami természetesen a komplex számokkal való számolás miatt kell. Ezek után már kezdjük is a főprogramot, melyben
+        legelőször deklaráljuk a változókat, majd meghatározzuk a magasságot, szálességet és a rácsban való mozgáshoz
+        szükségez koordnátákat. Ez a kép kirajzoltatásához a <varname>c</varname> állandó értékében most nincs "i", ezért
+        a <varname>c</varname>-nek a valós részéhez (reC) adunk meg 0-tól különböző értéket, az imaginárius, képzett
+        részéhez (imC) pedig 0-t.
+      </para>
+
+      <programlisting language="c++">
+        <![CDATA[png::image < png::rgb_pixel > kep ( szelesseg, magassag );
+
     double dx = ( xmax - xmin ) / szelesseg;
     double dy = ( ymax - ymin ) / magassag;
+
     std::complex<double> cc ( reC, imC );
+
     std::cout << "Szamitas\n";
+
     // j megy a sorokon
     for ( int y = 0; y < magassag; ++y )
     {
         // k megy az oszlopokon
+
         for ( int x = 0; x < szelesseg; ++x )
         {
+
             double reZ = xmin + x * dx;
             double imZ = ymax - y * dy;
             std::complex<double> z_n ( reZ, imZ );
+
             int iteracio = 0;
             for (int i=0; i < iteraciosHatar; ++i)
             {
+
                 z_n = std::pow(z_n, 3) + cc;
                 //z_n = std::pow(z_n, 2) + std::sin(z_n) + cc;
                 if(std::real ( z_n ) > R || std::imag ( z_n ) > R)
@@ -456,19 +530,51 @@ main ( int argc, char *argv[] )
                     break;
                 }
             }
+
             kep.set_pixel ( x, y,
                             png::rgb_pixel ( (iteracio*20)%255, (iteracio*40)%255, (iteracio*60)%255 ));
         }
+
         int szazalek = ( double ) y / ( double ) magassag * 100.0;
         std::cout << "\r" << szazalek << "%" << std::flush;
     }
+
     kep.write ( argv[1] );
     std::cout << "\r" << argv[1] << " mentve." << std::endl;
+
 }
 ]]>
-        </programlisting>                                 
-                                          
-                                                                            
+      </programlisting>
+      <para>
+        A következő programrészben, az első pixelre állunk, majd elkezdjük a számításokat. A két egymásbaágyzó for
+        ciklussal rácsot teszünk a komplex számsíkra (ahol a <varname>j</varname>-vel a soron, a <varname>k</varname>-al
+        pedig az oszlopon megyünk végig). Az előző complex osztállyal megvalósított Mandelbrot halmazzal szemben, itt a
+        <varname>cc</varname> nem változik, hanem minden vizsgált z rácspontra ugyanaz, állandó lesz (a program eme változata
+        a Júlia halmaz része). A mi programunkban a függvény a kövztkezőképpen néz ki: z_n<superscript>3</superscript>+c.
+        A függűvény változtatásával a készített kép is fog változni.
+      </para>
+
+      <para>
+        Fordítás: <command>g++ biomorfok.cpp -lpng -O3 -o biomorfok</command>
+      </para>
+      <para>
+        Futtatás: <command>./biomorfok biomorf.png 800 800 10 -2 2 -2 2 .285 0 10</command>
+      </para>
+      <para>
+        Kép megnyitása terminálból: <command>eog biomorf.png</command>
+      </para>
+      <figure>
+        <title>Biomorf kép</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="Mandelbrot/biomorf.png" scale="40" />
+          </imageobject>
+          <textobject>
+            <phrase>Biomorf kép</phrase>
+          </textobject>
+        </mediaobject>
+      </figure>
+
     </section>                     
 
     <section>
@@ -482,64 +588,102 @@ main ( int argc, char *argv[] )
             </link> nevű állománya.            
         </para>
 
-<para>
-Kezdetnek deviniáljuk a méretet(600) és az iterációs határt(32000), majd megalkotjuk a mandel halmazt:
-</para>
-<programlisting language='c++'><![CDATA[
-<png++/image.hpp>
+      <para>
+        A forráskód megtalálható a következő linken is: <link xlink:href="Mandelbrot/mandelpngc_60x60_100.cu">../Mandelbrot/mandelpngc_60x60_100.cu</link>
+      </para>
+      <programlisting>
+        <![CDATA[// mandelpngc_60x60_100.cu
+// Copyright (C) 2019
+// Norbert Bátfai, batfai.norbert@inf.unideb.hu
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
+// Version history
+//
+//  Mandelbrot png
+//  Programozó Páternoszter/PARP
+//   https://www.tankonyvtar.hu/hu/tartalom/tamop412A/2011-0063_01_parhuzamos_prog_linux
+//
+//  https://youtu.be/gvaqijHlRUs
+//
+
+#include <png++/image.hpp>
 #include <png++/rgb_pixel.hpp>
+
 #include <sys/times.h>
 #include <iostream>
+
+
 #define MERET 600
 #define ITER_HAT 32000
+
 __device__ int
 mandel (int k, int j)
 {
+  // számítás adatai
   float a = -2.0, b = .7, c = -1.35, d = 1.35;
   int szelesseg = MERET, magassag = MERET, iteraciosHatar = ITER_HAT;
+
+  // a számítás
   float dx = (b - a) / szelesseg;
   float dy = (d - c) / magassag;
   float reC, imC, reZ, imZ, ujreZ, ujimZ;
-  
+  // Hány iterációt csináltunk?
   int iteracio = 0;
+
+  // c = (reC, imC) a rács csomópontjainak
+  // megfelelő komplex szám
   reC = a + k * dx;
   imC = d - j * dy;
-  
+  // z_0 = 0 = (reZ, imZ)
   reZ = 0.0;
   imZ = 0.0;
   iteracio = 0;
-  
+
   while (reZ * reZ + imZ * imZ < 4 && iteracio < iteraciosHatar)
     {
+      // z_{n+1} = z_n * z_n + c
       ujreZ = reZ * reZ - imZ * imZ + reC;
       ujimZ = 2 * reZ * imZ + imC;
       reZ = ujreZ;
       imZ = ujimZ;
+
       ++iteracio;
+
     }
   return iteracio;
 }
-}]]>
-        </programlisting>
-<para>
-Az Nvidia fordító gépi kóddá változtatja azt a részt , ahol a "__global__" (vagy "__device__") szerepel. <function>threadIdx.x/y</function> abban lesz segítségünkre , hogy az x és y számokhoz melyik szálon fut az érték kiszámítása
-</para>
-<programlisting language='c++'><![CDATA[
+
 __global__ void
 mandelkernel (int *kepadat)
 {
+
   int tj = threadIdx.x;
   int tk = threadIdx.y;
+
   int j = blockIdx.x * 10 + tj;
   int k = blockIdx.y * 10 + tk;
+
   kepadat[j + k * MERET] = mandel (j, k);
 }
+
 void
 cudamandel (int kepadat[MERET][MERET])
 {
   int *device_kepadat;
   cudaMalloc ((void **) &device_kepadat, MERET * MERET * sizeof (int));
-  
+
   dim3 grid (MERET / 10, MERET / 10);
   dim3 tgrid (10, 10);
   mandelkernel <<< grid, tgrid >>> (device_kepadat);  
@@ -548,22 +692,29 @@ cudamandel (int kepadat[MERET][MERET])
 	      MERET * MERET * sizeof (int), cudaMemcpyDeviceToHost);
   cudaFree (device_kepadat);
 }
+
 int
 main (int argc, char *argv[])
 {
+  // Mérünk időt (PP 64)
   clock_t delta = clock ();
+  // Mérünk időt (PP 66)
   struct tms tmsbuf1, tmsbuf2;
   times (&tmsbuf1);
+
   if (argc != 2)
     {
       std::cout << "Hasznalat: ./mandelpngc fajlnev";
       return -1;
     }
+
   int kepadat[MERET][MERET];
   cudamandel (kepadat);
   png::image < png::rgb_pixel > kep (MERET, MERET);
+
   for (int j = 0; j < MERET; ++j)
     {
+      //sor = j;
       for (int k = 0; k < MERET; ++k)
 	{
 	  kep.set_pixel (k, j,
@@ -576,17 +727,27 @@ main (int argc, char *argv[])
 	}
     }
   kep.write (argv[1]);
+
   std::cout << argv[1] << " mentve" << std::endl;
+
   times (&tmsbuf2);
   std::cout << tmsbuf2.tms_utime - tmsbuf1.tms_utime
     + tmsbuf2.tms_stime - tmsbuf1.tms_stime << std::endl;
+
   delta = clock () - delta;
   std::cout << (float) delta / CLOCKS_PER_SEC << " sec" << std::endl;
-}]]>
-        </programlisting>
-<para> Ezzel a programmal is egy Mandelbrot halmazt akarunk kirajzoltatni , viszont itt már Nvidia videókártya segítségével , ami jóval gyorsabban működne.
-</para>
 
+}]]>
+      </programlisting>
+      <para>
+        Ugynúgy mint a legelső Mandelbrotos feladat, a mandelbrot halmazt számolja ki, hasonló műveletekkel,
+        viszont van egy nagy különbség a kettő között: míg az első a CPU-t használja a számítások közben, addig ez a
+        program a GPU-t használja. A program futtatása után a számok melyek az időt mutatják magukért beszélnek.
+        Míg a CPU-t használó program 15 másodpercet vett igénybe, addig CUDA-s program mintegy 0.15 másodperc
+        alatt kiszámolja nekünk ugyanazt az eredményt. A két program leírásban nagyon hasonlít az előző feladathoz,
+        mint mondtam itt a számítási idők mások, ezt az időt a program során számoljuk és iratjuk ki, hogy legyen ű
+        vizsonyítási alapunk.
+      </para>
 
     </section>                     
 
@@ -603,403 +764,138 @@ main (int argc, char *argv[])
             illetve <link xlink:href="https://sourceforge.net/p/udprog/code/ci/master/tree/source/binom/Batfai-Barki/frak/">https://sourceforge.net/p/udprog/code/ci/master/tree/source/binom/Batfai-Barki/frak/</link>.
 
         </para>
-<para>
-frak.pro - Ennek a fájlnak a feladata lesz az összes kódot összeszedni, és ezt futtatva hozhatjuk létre a nagyítható Mandelbrot halmaz képét.
-</para>
-<programlisting language="c++"><![CDATA[
-######################################################################
-# Automatically generated by qmake (3.0) Thu Apr 10 11:36:01 2014
-######################################################################
-TEMPLATE = app
-TARGET = frak
-INCLUDEPATH += .
-DEFINES += QT_DEPREACTED_WARNINGS
-#include <QtWidgets>
-QT += widgets
-# Input
-HEADERS += frakablak.h frakszal.h
-SOURCES += frakablak.cpp frakszal.cpp main.cpp
-]]></programlisting>
-<para>
-Az egésznek van egy main fájlja is , ami a következő
-</para>
-<programlisting language="c++"><![CDATA[
-#include <QApplication>
-#include "frakablak.h"
-int main(int argc, char *argv[])
-{
-    QApplication a(argc, argv);
-   
-    FrakAblak w1;
-    w1.show();
-    
-    return a.exec();
-}
-]]></programlisting>
+      <para>
+        A forráskód megtalálható a következő linken is: <link xlink:href="Mandelbrot/mandelbrotnagyito.cpp">../Mandelbrot/mandelbrotnagyito.cpp</link>
+      </para>
 
-<para>
-frakablak.cpp
-</para>
+      <para>
+        A Mandelbrot halmaz kiszámítása mellett ezzel a programmal a kiadott képen nagyítást is tudunk
+        végrehaktani. A kép megnyitása után az egerünk görgőjének segítségével tudunk benne nagyítani, illetve
+        touchpad-en a kétújjas mozdulattal.
+      </para>
 
-<programlisting language="c++"><![CDATA[
-// frakablak.cpp
-//
-// Mandelbrot halmaz nagyt
-// Programoz Pternoszter
-//
-// Copyright (C) 2011, Btfai Norbert, nbatfai@inf.unideb.hu, nbatfai@gmail.com
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Ez a program szabad szoftver; terjeszthet illetve mdosthat a
-// Free Software Foundation ltal kiadott GNU General Public License
-// dokumentumban lertak; akr a licenc 3-as, akr (tetszleges) ksbbi
-// vltozata szerint.
-//
-// Ez a program abban a remnyben kerl kzreadsra, hogy hasznos lesz,
-// de minden egyb GARANCIA NLKL, az ELADHATSGRA vagy VALAMELY CLRA
-// VAL ALKALMAZHATSGRA val szrmaztatott garancit is belertve.
-// Tovbbi rszleteket a GNU General Public License tartalmaz.
-//
-// A felhasznlnak a programmal egytt meg kell kapnia a GNU General
-// Public License egy pldnyt; ha mgsem kapta meg, akkor
-// tekintse meg a <http://www.gnu.org/licenses/> oldalon.
-//
-//
-// Version history:
-//
-// 0.0.1    Br a Nokia Qt SDK ppen tartalmaz egy Mandelbrotos pldt, de
-// ezt nem tartottam megfelelnek els Qt programknt ajnlani, mert elg
-// bonyolult: hasznl klcsns kizrst stb. Ezrt "from scratch" megrtam
-// egy sajtot a Javt tantokhoz rt dallamra:
-// http://www.tankonyvtar.hu/informatika/javat-tanitok-2-2-080904-1
-//
-#include "frakablak.h"
-FrakAblak::FrakAblak(double a, double b, double c, double d,
-                     int szelesseg, int iteraciosHatar, QWidget *parent)
-                         : QMainWindow(parent)
-{
-    setWindowTitle("Mandelbrot halmaz");
-    szamitasFut = true;
-    x = y = mx = my = 0;
-    this->a = a;
-    this->b = b;
-    this->c = c;
-    this->d = d;
-    this->szelesseg = szelesseg;
-    this->iteraciosHatar = iteraciosHatar;
-    magassag = (int)(szelesseg * ((d-c)/(b-a)));
-    setFixedSize(QSize(szelesseg, magassag));
-    fraktal= new QImage(szelesseg, magassag, QImage::Format_RGB32);
-    mandelbrot = new FrakSzal(a, b, c, d, szelesseg, magassag, iteraciosHatar, this);
-    mandelbrot->start();
-}
-FrakAblak::~FrakAblak()
-{
-    delete fraktal;
-    delete mandelbrot;
-}
-void FrakAblak::paintEvent(QPaintEvent*) {
-    QPainter qpainter(this);
-    qpainter.drawImage(0, 0, *fraktal);
-    if(!szamitasFut) {
-        qpainter.setPen(QPen(Qt::white, 1));
-        qpainter.drawRect(x, y, mx, my);
-    }
-    qpainter.end();
-}
-void FrakAblak::mousePressEvent(QMouseEvent* event) {
-    // A nagytand kijellt terletet bal fels sarka:
-    x = event->x();
-    y = event->y();
-    mx = 0;
-    my = 0;
-    update();
-}
-void FrakAblak::mouseMoveEvent(QMouseEvent* event) {
-    // A nagytand kijellt terlet szlessge s magassga:
-    mx = event->x() - x;
-    my = mx; // ngyzet alak
-    update();
-}
-void FrakAblak::mouseReleaseEvent(QMouseEvent* event) {
-    if(szamitasFut)
-        return;
-    szamitasFut = true;
-    double dx = (b-a)/szelesseg;
-    double dy = (d-c)/magassag;
-    double a = this->a+x*dx;
-    double b = this->a+x*dx+mx*dx;
-    double c = this->d-y*dy-my*dy;
-    double d = this->d-y*dy;
-    this->a = a;
-    this->b = b;
-    this->c = c;
-    this->d = d;
-    delete mandelbrot;
-    mandelbrot = new FrakSzal(a, b, c, d, szelesseg, magassag, iteraciosHatar, this);
-    mandelbrot->start();
-    update();
-}
-void FrakAblak::keyPressEvent(QKeyEvent *event)
-{
-    if(szamitasFut)
-        return;
-    if (event->key() == Qt::Key_N)
-        iteraciosHatar *= 2;
-    szamitasFut = true;
-    delete mandelbrot;
-    mandelbrot = new FrakSzal(a, b, c, d, szelesseg, magassag, iteraciosHatar, this);
-    mandelbrot->start();
-}
-void FrakAblak::vissza(int magassag, int *sor, int meret)
-{
-    for(int i=0; i<meret; ++i) {
-        QRgb szin = qRgb(0, 255-sor[i], 0);
-        fraktal->setPixel(i, magassag, szin);
-    }
-    update();
-}
-void FrakAblak::vissza(void)
-{
-    szamitasFut = false;
-    x = y = mx = my = 0;
-}
-]]></programlisting>
-
-<para>
-frakszal.cpp
-</para>
-<programlisting language="c++"><![CDATA[
-#include "frakszal.h"
-FrakSzal::FrakSzal(double a, double b, double c, double d,
-                   int szelesseg, int magassag, int iteraciosHatar, FrakAblak *frakAblak)
-{
-    this->a = a;
-    this->b = b;
-    this->c = c;
-    this->d = d;
-    this->szelesseg = szelesseg;
-    this->iteraciosHatar = iteraciosHatar;
-    this->frakAblak = frakAblak;
-    this->magassag = magassag;
-    egySor = new int[szelesseg];
-}
-FrakSzal::~FrakSzal()
-{
-    delete[] egySor;
-}
-// A szál kódját a Javát tanítokhoz írt Java kódomból vettem át
-// http://www.tankonyvtar.hu/informatika/javat-tanitok-2-2-080904-1
-// mivel itt az algoritmust is leírtam/lerajzoltam, így meghagytam
-// a kommenteket, hogy a hallgató könnyen hozzáolvashassa az "elméletet",
-// ha érdekli.
-void FrakSzal::run()
-{
-    // A [a,b]x[c,d] tartományon milyen sűrű a
-    // megadott szélesség, magasság háló:
-    double dx = (b-a)/szelesseg;
-    double dy = (d-c)/magassag;
-    double reC, imC, reZ, imZ, ujreZ, ujimZ;
-    // Hány iterációt csináltunk?
-    int iteracio = 0;
-    // Végigzongorázzuk a szélesség x magasság hálót:
-    for(int j=0; j<magassag; ++j) {
-        //sor = j;
-        for(int k=0; k<szelesseg; ++k) {
-            // c = (reC, imC) a háló rácspontjainak
-            // megfelelő komplex szám
-            reC = a+k*dx;
-            imC = d-j*dy;
-            // z_0 = 0 = (reZ, imZ)
-	    std::complex<double> c(reC, imC);
-	    
-            reZ = 0;
-            imZ = 0;	    
-	    std::complex<double> z_n(reZ, imZ);
-            iteracio = 0;
-            // z_{n+1} = z_n * z_n + c iterációk
-            // számítása, amíg |z_n| < 2 vagy még
-            // nem értük el a 255 iterációt, ha
-            // viszont elértük, akkor úgy vesszük,
-            // hogy a kiinduláci c komplex számra
-            // az iteráció konvergens, azaz a c a
-            // Mandelbrot halmaz eleme
-	    /*
-            while(reZ*reZ + imZ*imZ < 4 && iteracio < iteraciosHatar) {
-                // z_{n+1} = z_n * z_n + c
-	      ujreZ = reZ*reZ+ std::atan(reZ*reZ - imZ*imZ) + std::sqrt(reC);
-	      ujimZ = 2*reZ*imZ+std::atan(2*reZ*imZ) + imC;
-                reZ = ujreZ;
-                imZ = ujimZ;
-                ++iteracio;
-            }
-            */
-	    while( std::abs(z_n) < 4 && iteracio < iteraciosHatar) {
-	      z_n = z_n  * z_n + c;
-	      
-	      ++iteracio;
-	    }  
-	      
-            // ha a < 4 feltétel nem teljesült és a
-            // iteráció < iterációsHatár sérülésével lépett ki, azaz
-            // feltesszük a c-ről, hogy itt a z_{n+1} = z_n * z_n + c
-            // sorozat konvergens, azaz iteráció = iterációsHatár
-            // ekkor az iteráció %= 256 egyenlő 255, mert az esetleges
-            // nagyítasok során az iteráció = valahány * 256 + 255
-            iteracio %= 256;
-            //a színezést viszont már majd a FrakAblak osztályban lesz
-            egySor[k] = iteracio;
-        }
-        // Ábrázolásra átadjuk a kiszámolt sort a FrakAblak-nak.
-        frakAblak->vissza(j, egySor, szelesseg);
-    }
-    frakAblak->vissza();
-}
-]]></programlisting>
-
-	<para>
-	frakablak.h
-	</para>
-<programlisting language="c++"><![CDATA[
-#ifndef FRAKABLAK_H
-#define FRAKABLAK_H
-#include <QMainWindow>
-#include <QImage>
-#include <QPainter>
-#include <QMouseEvent>
-#include <QKeyEvent>
-#include "frakszal.h"
-class FrakSzal;
-class FrakAblak : public QMainWindow
-{
-    Q_OBJECT
-public:
-    FrakAblak(double a = -2.0, double b = .7, double c = -1.35,
-              double d = 1.35, int szelesseg = 600,
-              int iteraciosHatar = 255, QWidget *parent = 0);
-    ~FrakAblak();
-    void vissza(int magassag , int * sor, int meret) ;
-    void vissza(void) ;
-    // A komplex sk vizsglt tartomnya [a,b]x[c,d].
-    double a, b, c, d;
-    // A komplex sk vizsglt tartomnyra fesztett
-    // hl szlessge s magassga.
-    int szelesseg, magassag;
-    // Max. hny lpsig vizsgljuk a z_{n+1} = z_n * z_n + c itercit?
-    // (tk. most a nagytsi pontossg)
-    int iteraciosHatar;
-protected:
-    void paintEvent(QPaintEvent*);
-    void mousePressEvent(QMouseEvent*);
-    void mouseMoveEvent(QMouseEvent*);
-    void mouseReleaseEvent(QMouseEvent*);
-    void keyPressEvent(QKeyEvent*);
-private:
-    QImage* fraktal;
-    FrakSzal* mandelbrot;
-    bool szamitasFut;
-    // A nagytand kijellt terletet bal fels sarka.
-    int x, y;
-    // A nagytand kijellt terlet szlessge s magassga.
-    int mx, my;
-};
-#endif // FRAKABLAK_H
-]]></programlisting>
-<para>
-frakablak.h
-</para>
-<programlisting language="c++"><![CDATA[
-#ifndef FRAKABLAK_H
-#define FRAKABLAK_H
-#include <QMainWindow>
-#include <QImage>
-#include <QPainter>
-#include <QMouseEvent>
-#include <QKeyEvent>
-#include "frakszal.h"
-class FrakSzal;
-class FrakAblak : public QMainWindow
-{
-    Q_OBJECT
-public:
-    FrakAblak(double a = -2.0, double b = .7, double c = -1.35,
-              double d = 1.35, int szelesseg = 600,
-              int iteraciosHatar = 255, QWidget *parent = 0);
-    ~FrakAblak();
-    void vissza(int magassag , int * sor, int meret) ;
-    void vissza(void) ;
-    // A komplex sk vizsglt tartomnya [a,b]x[c,d].
-    double a, b, c, d;
-    // A komplex sk vizsglt tartomnyra fesztett
-    // hl szlessge s magassga.
-    int szelesseg, magassag;
-    // Max. hny lpsig vizsgljuk a z_{n+1} = z_n * z_n + c itercit?
-    // (tk. most a nagytsi pontossg)
-    int iteraciosHatar;
-protected:
-    void paintEvent(QPaintEvent*);
-    void mousePressEvent(QMouseEvent*);
-    void mouseMoveEvent(QMouseEvent*);
-    void mouseReleaseEvent(QMouseEvent*);
-    void keyPressEvent(QKeyEvent*);
-private:
-    QImage* fraktal;
-    FrakSzal* mandelbrot;
-    bool szamitasFut;
-    // A nagytand kijellt terletet bal fels sarka.
-    int x, y;
-    // A nagytand kijellt terlet szlessge s magassga.
-    int mx, my;
-};
-#endif // FRAKABLAK_H
-]]></programlisting>
-<para>
-frakszal.h
-</para>
-<programlisting language="c++"><![CDATA[
-#ifndef FRAKSZAL_H
-#define FRAKSZAL_H
-#include <QThread>
-#include <cmath>
+      <programlisting language="c++">
+        <![CDATA[#include <iostream>
+#include "png++/png.hpp"
 #include <complex>
-#include "frakablak.h"
-class FrakAblak;
-class FrakSzal : public QThread
+
+int
+main ( int argc, char *argv[] )
 {
-    Q_OBJECT
-public:
-    FrakSzal(double a, double b, double c, double d,
-             int szelesseg, int magassag, int iteraciosHatar, FrakAblak *frakAblak);
-    ~FrakSzal();
-    void run();
-protected:
-    // A komplex sík vizsgált tartománya [a,b]x[c,d].
-    double a, b, c, d;
-    // A komplex sík vizsgált tartományára feszített
-    // háló szélessége és magassága.
-    int szelesseg, magassag;
-    // Max. hány lépésig vizsgáljuk a z_{n+1} = z_n * z_n + c iterációt?
-    // (tk. most a nagyítási pontosság)
-    int iteraciosHatar;
-    // Kinek számolok?
-    FrakAblak* frakAblak;
-    // Soronként küldöm is neki vissza a kiszámoltakat.
-    int* egySor;
-};
-#endif // FRAKSZAL_H
-]]></programlisting>
+	int szelesseg = 1920;
+	int magassag = 1080;
+	int iteraciosHatar = 255;
+	double a = −1.9;
+	double b = 0.7;
+	double c = −1.3;
+	double d = 1.3;
+
+	if ( argc == 9 )
+	{
+		szelesseg = atoi ( argv[2] );
+		magassag = atoi ( argv[3] );
+		iteraciosHatar = atoi ( argv[4] );
+		a = atof ( argv[5] );
+		b = atof ( argv[6] );
+		c = atof ( argv[7] );
+		d = atof ( argv[8] );
+	}
+	else
+	{
+		std::cout << "Hasznalat: ./3.1.1 fajlnev szelesseg magassag n a b c d" << std::endl;
+		std::cout << "Most az alapbeallitasokkal futtatjuk " << szelesseg << " "
+		<< magassag << " "
+		<< iteraciosHatar << " "
+		<< a << " "
+		<< b << " "
+		<< c << " "
+		<< d << " " << std::endl;
+		//return −1;
+	}]]>
+      </programlisting>
+      <para>
+        A program eleje ismerős hiszen úgyanaz mint az előző programok esetében: header fájlok dekalrálása,
+        majd a változók beadagolása (<varname>szelesseg</varname>, <varname>magassag</varname>, <varname>iteraciosHatar</varname>, <varname>a</varname>,
+        <varname>b</varname>, <varname>c</varname> és <varname>d</varname>). Most is megvizsgáljuk hogy a parancs
+        amivel a felhasználó futtatta a programot, az tényleg 9 argumentumból áll-e. Ha igen akkor az az egyes
+        argumentumokat, értékeket átadjuk az egyes változóknak, ha viszont az argumentumok száma nem felel meg,
+        akkor használati utasítást adunk a programot futtatónak hogy mi lenne a helyes mód, illetve még segítségképp
+        megmutatjuk azt is hogy mik voltak az általunk adott alap beállítások.
+      </para>
+      <programlisting language="c++">
+        <![CDATA[	png::image < png::rgb_pixel > kep ( szelesseg, magassag );
+
+	double dx = ( b − a ) / szelesseg;
+	double dy = ( d − c ) / magassag;
+	double reC, imC, reZ, imZ;
+	int iteracio = 0;
+	
+	std::cout << "Szamitas\n";
+	
+	for ( int j = 0; j < magassag; ++j )
+	{
+		for ( int k = 0; k < szelesseg; ++k )
+		{
+			reC = a + k * dx;
+			imC = d − j * dy;
+			std::complex<double> c ( reC, imC );
+			
+			std::complex<double> z_n ( 0, 0 );
+			iteracio = 0;
+			
+			while ( std::abs ( z_n ) < 4 && iteracio < iteraciosHatar )
+			{
+				z_n = z_n * z_n + c;
+
+				++iteracio;
+			}
+
+			iteracio %= 256;
+
+			kep.set_pixel ( k, j,
+			png::rgb_pixel ( iteracio%255, 0, 0 ) );
+		}
+
+		int szazalek = ( double ) j / ( double ) magassag * 100.0;
+		std::cout << "\r" << szazalek << "%" << std::flush;
+	}
+
+	kep.write ( argv[1] );
+	std::cout << "\r" << argv[1] << " mentve." << std::endl;
+	
+}]]>
+      </programlisting>
+      <para>
+        A program utolsó része ugynőgy komplexszámos megoldásssal van csinálva. A két for cuklussal végigmegyünk
+        a rácson <varname>j</varname>-vel a soron, <varname>k</varname>-val az oszlopon. A a <varname>reC</varname>,
+        <varname>imC</varname>, <varname>reZ</varname> és <varname>imZ</varname> (valós és imaginárius részű) változókat
+        használva végigmegyünk minden rácsponton úgy, hogy a c=(reC, imC) a haló rácspontjainak megfelelő komplex szám.
+        A megadott képletet használva megalkotjuk a várt képet, megkapjuk a "mentve" üzenetet, megnyitjuk a képet
+        és tetszésünk szerint nagyítgathatunk a kapott képben aszerint ahogy a feladat legelején bemutattam.
+      </para>
+
+      <para>
+        Fordítás: <command>g++ mandelbrotnagyito.cpp -lpng16 -O3 -o mandelbrotnagy</command>
+      </para>
+      <para>
+        Futtatás: <command>./mandelbrotnagy mandelnagy.png 1920 1080 1020 0.41276554182095892553405747094075195491310.4127655418245818053080142817634623497725 0.2135387051768746491386963270997512154281 0.2135387051804975289126531379224616102874</command>
+      </para>
+      <para>
+        Kép megnyitása terminálból: <command>eog mandelnagy.png</command>
+      </para>
+      <figure>
+        <title>C++ mandelbrot nagyító és utazó</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="Mandelbrot/mandelnagy.png" scale="25" />
+          </imageobject>
+          <textobject>
+            <phrase>C++ mandelbrot nagyító és utazó</phrase>
+          </textobject>
+        </mediaobject>
+      </figure>
+
+
     </section>                     
                                                                                                                                                                             
     <section>
@@ -1013,10 +909,17 @@ protected:
         <para>
             Megoldás forrása: <link xlink:href="https://www.tankonyvtar.hu/hu/tartalom/tkt/javat-tanitok-javat/apbs02.html#id570518">https://www.tankonyvtar.hu/hu/tartalom/tkt/javat-tanitok-javat/apbs02.html#id570518</link>
         </para>
-
-<programlisting language="java">
-<![CDATA[
-/*
+      <para>
+        A program célja ugyanaz mint az előző programé: nagyítsunk a kapott képben. A java-s program úgy van megírva,
+        hogy itt a bal egérgomb segítségével kell kijelöljük azt a részt amt pontosabban, "közelebbről" megszeretnénk
+        tekinteni. Ezt a műveletet nagyon sokszor tudjuk megcsinálni egymás után. A programban commentként rengeteg
+        magyarázatot találunk, melyek a különböző sorok, parancsok mülködését írják le.
+      </para>
+      <para>
+        A forráskód megtalálható a következő linken is: <link xlink:href="Mandelbrot/MandelbrotHalmazNagyito.java">../Mandelbrot/MandelbrotHalmazNagyito.java</link>
+      </para>
+      <programlisting language="java">
+        <![CDATA[/*
  * MandelbrotHalmazNagyító.java
  *
  * DIGIT 2005, Javat tanítok
@@ -1048,24 +951,16 @@ public class MandelbrotHalmazNagyító extends MandelbrotHalmaz {
      */
     public MandelbrotHalmazNagyító(double a, double b, double c, double d,
             int szélesség, int iterációsHatár) {
-        // Az ős osztály konstruktorának hívása
         super(a, b, c, d, szélesség, iterációsHatár);
         setTitle("A Mandelbrot halmaz nagyításai");
-        // Egér kattintó események feldolgozása:
         addMouseListener(new java.awt.event.MouseAdapter() {
-            // Egér kattintással jelöljük ki a nagyítandó területet
-            // bal felső sarkát:
             public void mousePressed(java.awt.event.MouseEvent m) {
-                // A nagyítandó kijelölt területet bal felső sarka:
                 x = m.getX();
                 y = m.getY();
                 mx = 0;
                 my = 0;
                 repaint();
             }
-            // Vonszolva kijelölünk egy területet...
-            // Ha felengedjük, akkor a kijelölt terület
-            // újraszámítása indul:
             public void mouseReleased(java.awt.event.MouseEvent m) {
                 double dx = (MandelbrotHalmazNagyító.this.b
                         - MandelbrotHalmazNagyító.this.a)
@@ -1073,7 +968,6 @@ public class MandelbrotHalmazNagyító extends MandelbrotHalmaz {
                 double dy = (MandelbrotHalmazNagyító.this.d
                         - MandelbrotHalmazNagyító.this.c)
                         /MandelbrotHalmazNagyító.this.magasság;
-                // Az új Mandelbrot nagyító objektum elkészítése:
                 new MandelbrotHalmazNagyító(MandelbrotHalmazNagyító.this.a+x*dx,
                         MandelbrotHalmazNagyító.this.a+x*dx+mx*dx,
                         MandelbrotHalmazNagyító.this.d-y*dy-my*dy,
@@ -1081,23 +975,39 @@ public class MandelbrotHalmazNagyító extends MandelbrotHalmaz {
                         600,
                         MandelbrotHalmazNagyító.this.iterációsHatár);
             }
-        });
-        // Egér mozgás események feldolgozása:
-        addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            // Vonszolással jelöljük ki a négyzetet:
+        });]]>
+      </programlisting>
+      <para>
+        A program elején úgyanúgy mint ahogy megszoktuk jönnek a változók deklarálásai, ahol az <varname>x</varname>
+        és az <varname>y</varname> változókkal határoljuk be a nagyítandó terület bal felső sarkát, illetve az
+        <varname>mx</varname> és <varname>my</varname> pedig a kijelölt nagyítandó terület magassága és szélessége.
+        vjuk az ős osztály konstruktorát, beállítjuk az ablak címét (amiben majd nagyítunk) és deklaráljuk az egér
+        kattintás müveletét. Az azonnal következő <function>mousePressed</function> függvény segítségével deklaráljuk
+        a nagyítandó terület bal felső sarkát, szélességé és magasságát. A következő <function>mouseReleased</function>
+        függvénnyel az a művelet aktivizálódik, amikor kattintjuk az egeret, vonszolással kijelöljük a nagyítani kívánt
+        területet és amikor elengedjük az egérgombot akkor a kijelölt terület újraszámítása kezdődik el, illetve megalkotódik
+        a kinagyított terület, az lesz az aktuális kép amit az ablakban látunk és továbbnagyítunk majd.
+      </para>
+
+      <programlisting language="java">
+        <![CDATA[        addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseDragged(java.awt.event.MouseEvent m) {
-                // A nagyítandó kijelölt terület szélessége és magassága:
                 mx = m.getX() - x;
                 my = m.getY() - y;
                 repaint();
             }
         });
-    }
-    /**
-     * Pillanatfelvételek készítése.
-     */
-    public void pillanatfelvétel() {
-        // Az elmentendő kép elkészítése:
+    }]]>
+      </programlisting>
+      <para>
+        Itt deklaráljuk a fentebb már használt függvényt, ami arra szolgál hogy követni lehessen a
+        eglr mozgását, kattintásának feldolgozását, a kijelölés menetét mindazáltal hogy közben
+        megadjuk a <function>mouseDragged</function> föggvényt (ami nem más mint a vonszolás, a
+        kijelölés menete, az új szélesség és a magasság bellítása és az újraméretezés által).
+      </para>
+
+      <programlisting language="java">
+        <![CDATA[    public void pillanatfelvétel() {
         java.awt.image.BufferedImage mentKép =
                 new java.awt.image.BufferedImage(szélesség, magasság,
                 java.awt.image.BufferedImage.TYPE_INT_RGB);
@@ -1116,14 +1026,11 @@ public class MandelbrotHalmazNagyító extends MandelbrotHalmaz {
         g.setColor(java.awt.Color.GREEN);
         g.drawRect(x, y, mx, my);
         g.dispose();        
-        // A pillanatfelvétel képfájl nevének képzése:
         StringBuffer sb = new StringBuffer();
         sb = sb.delete(0, sb.length());
         sb.append("MandelbrotHalmazNagyitas_");
         sb.append(++pillanatfelvételSzámláló);
         sb.append("_");
-        // A fájl nevébe belevesszük, hogy melyik tartományban
-        // találtuk a halmazt:
         sb.append(a);
         sb.append("_");
         sb.append(b);
@@ -1139,132 +1046,54 @@ public class MandelbrotHalmazNagyító extends MandelbrotHalmaz {
         } catch(java.io.IOException e) {
             e.printStackTrace();
         }
-    }    
-    /**
-     * A nagyítandó kijelölt területet jelző négyzet kirajzolása.
-     */
-    public void paint(java.awt.Graphics g) {
-        // A Mandelbrot halmaz kirajzolása
-         g.drawImage(kép, 0, 0, this);
-        // Ha éppen fut a számítás, akkor egy vörös
-        // vonallal jelöljük, hogy melyik sorban tart:         
+    }]]>
+      </programlisting>
+      <para>
+        Mint a sima nagyítás nélküli programban, itt is lehetővé tesszük a felhasználó számára
+        a pillanatfelvétel készítésének a lehetőségét. Ebben az esetben figyelme vesszük azt is,
+        hogy az adott képernyőfotó hányadik volt, mivel hogy könnyebben tudjunk majd eligazodni a
+        képek között, a kép nevében szerepelni fog hogy mikor csináltuk azt, hányadikként.
+        A fájl nevébe belevesszük, hogy melyik tartományban találtuk a halmazt:
+      </para>
+
+      <programlisting language="java">
+        <![CDATA[    public void paint(java.awt.Graphics g) {
+         g.drawImage(kép, 0, 0, this);         
         if(számításFut) {
             g.setColor(java.awt.Color.RED);
             g.drawLine(0, sor, getWidth(), sor);
         }         
-        // A jelző négyzet kirajzolása:
         g.setColor(java.awt.Color.GREEN);
         g.drawRect(x, y, mx, my);
     }
-    /**
-     * Példányosít egy Mandelbrot halmazt nagyító obektumot.
-     */
+
     public static void main(String[] args) {
-        // A kiinduló halmazt a komplex sík [-2.0, .7]x[-1.35, 1.35]
-        // tartományában keressük egy 600x600-as hálóval és az
-        // aktuális nagyítási pontossággal:
         new MandelbrotHalmazNagyító(-2.0, .7, -1.35, 1.35, 600, 255);
     }
-}
-]]>
-        </programlisting>
+}]]>
+      </programlisting>
+      <para>
+        A <function>paint</function> segítségével legelőször is kirajzoljuk a Mandelbrot halmazt.
+        Ha a számítások éppen futnak, akkor azt hogy melyik sorban tart egy vörös csíkkal jelöljük.
+        Végül pedig kirajzoltatjuk a nagyítandó terület körvonalát zöld színnel.
+      </para>
 
-<para>
-Tapasztalatok: Fontos , hogy ezt a MandelbrotHalmazNagyító.java állományt ugyan oda helyezzük , ahova a MandelbrotHalmaz.java állományunkat is tettük. A Mandelbrot halmaz nagyító programunk a Mandelbrot halmaz kiszámoló és kirajzoló programunknak a fejlesztett változata , mellyel a kirajzolt Mandelbrot halmaz kirajzolt képét nagyíthatjuk , aztán ismét és ismét ...
-Fordítása és futtatása:
-javac MandelbrotHalmazNagyító.java
-java MandelbrotHalmazNagyító
-</para>
-<para>
-A bal egérgomb lenyomásával kijelöljük a nagyítandó területet. A MandelbrotHalmazNagyító osztályban ezt egy beágyazott, a MouseAdapter adapter osztályt kiterjesztő névtelen osztálybeli eseménykezelő objektummal oldjuk meg: 
-</para>
-<programlisting language="java">
-<![CDATA[
-// Egér kattintó események feldolgozása:
-        addMouseListener(new java.awt.event.MouseAdapter() {
-            // Egér kattintással jelöljük ki a nagyítandó területet
-            // bal felső sarkát:
-            public void mousePressed(java.awt.event.MouseEvent m) {
-                // A nagyítandó kijelölt területet bal felső sarka:
-                x = m.getX();
-                y = m.getY();
-                mx = 0;
-                my = 0;
-                repaint();
-            }
-]]>
-        </programlisting>
-<para>
-
-A kijelölő, zölddel kirajzolt, nagyítandó területet kijelölő téglalap bal felső sarkának koordinátái az osztály x és y tagjai. A kijelölő téglalap szélessége és magassága az mx és az my tagok. 
-</para>
-<programlisting language="java">
-<![CDATA[
-    /** A nagyítandó kijelölt területet bal felső sarka. */
-    private int x, y;
-    /** A nagyítandó kijelölt terület szélessége és magassága. */
-    private int mx, my;
-]]>
-        </programlisting>
-<para>
-Ezek állítása történik az eseménykezelő egérkattintást feldolgozó mousePressed() módszerében. A függvény aktuális paramétereként megkapott eseményobjektumtól megkérdezzük a kattintás helyét:
-</para>
-<programlisting language="java">
-<![CDATA[
- x = m.getX();
-                y = m.getY();
-                mx = 0;
-                my = 0;
-                repaint();
-            }   
-]]>
-        </programlisting>
-<para>
-az mx és my szélességet, magasságot nullára állítjuk, ezeket majd az egérgomb nyomvatartása melletti vonszolás állítja be a vonszolás méretének megfelelő értékre. Az egérmutató vonszolásának megfigyelését ugyancsak egy beágyazott, de most a MouseMotionAdapter adapter osztályt kiterjesztő névtelen osztálybeli eseménykezelő objektummal oldjuk meg: 
-</para>
-<programlisting language="java">
-<![CDATA[
-// Egér mozgás események feldolgozása:
-        addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            // Vonszolással jelöljük ki a négyzetet:
-            public void mouseDragged(java.awt.event.MouseEvent m) {
-                // A nagyítandó kijelölt terület szélessége és magassága:
-                mx = m.getX() - x;
-                my = m.getY() - y;
-                repaint();
-            }
-        });
-]]>
-        </programlisting>
-<para>
-Az x és y példányok tárolják a négyzet bal felső sarkának oszlop és sor koordinátáját, ezeket az egérmutató aktuális helyéből kivonva kapjuk a kijelölt terület szélességét, illetve magasságát, például: mx = m.getX() - x;. A repaint() hívása biztosítja, hogy a megváltozott példánytagoknak megfelelő zöld tégla kirajzolásra kerüljön, azaz a paint() függvény meghívódjon, ahol 
-</para>
-<programlisting language="java">
-<![CDATA[
-// A jelző négyzet kirajzolása:
-        g.setColor(java.awt.Color.GREEN);
-        g.drawRect(x, y, mx, my);
-]]>
-        </programlisting>
-<para>
-Ha úgy érezzük, hogy a nagyítások során leromlott a pontosság, akkor az n gomb nyomásával növelni tudjuk a számítások iterációs határát. Ezt a billenytűzet eseményt egy beágyazott, a KeyAdapter adapter osztályt kiterjesztő névtelen osztálybeli eseménykezelő objektummal oldjuk meg: 
-</para>
-<programlisting language="java">
-<![CDATA[
-// A billentyűzetről érkező események feldolgozása
-        addKeyListener(new java.awt.event.KeyAdapter() {
-            // Az 's', 'n' és 'm' gombok lenyomását figyeljük 
-            public void keyPressed(java.awt.event.KeyEvent e) {            
-                ...                    
-                // Az 'n' gomb benyomásával pontosabb számítást végzünk.
-                else if(e.getKeyCode() == java.awt.event.KeyEvent.VK_N) {
-                    if(számításFut == false) {
-                        MandelbrotHalmaz.this.iterációsHatár += 256;
-                        // A számítás újra indul:
-                        számításFut = true;
-                        new Thread(MandelbrotHalmaz.this).start();
-                    }
-]]>
-        </programlisting>
+      <para>
+        Fordítás: <command>javac MandelbrotHalmazNagyító.java</command>
+      </para>
+      <para>
+        Futtatás: <command>java MandelbrotHalmazNagyító</command>
+      </para>
+      <figure>
+        <title>Java mandelbrot nagyító és utazó</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="Mandelbrot/mandelnagy.png" scale="45" />
+          </imageobject>
+          <textobject>
+            <phrase>Java mandelbrot nagyító és utazó</phrase>
+          </textobject>
+        </mediaobject>
+      </figure>
     </section>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
 </chapter>
