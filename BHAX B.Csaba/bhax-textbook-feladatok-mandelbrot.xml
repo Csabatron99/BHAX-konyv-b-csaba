@@ -748,6 +748,17 @@ main (int argc, char *argv[])
         mint mondtam itt a számítási idők mások, ezt az időt a program során számoljuk és iratjuk ki, hogy legyen ű
         vizsonyítási alapunk.
       </para>
+      <figure>
+      <title>Hogyan futtatatható valamint futási bizonyíték</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="img/mandels2.png" scale="60" />
+          </imageobject>
+          <textobject>
+            <phrase>Hogyan futtatatható valamint futási bizonyíték</phrase>
+          </textobject>
+        </mediaobject>
+      </figure>
 
     </section>                     
 

@@ -550,6 +550,10 @@ main (void)
       <para>
         A forráskód megtalálható a következő linken is: <link xlink:href="Caesar/neutoae.r">../Caesar/neutoae.r</link>
       </para>
+      <para>
+        Szemléltetés céljából vannak a program álltal generált pdf file-ok a megadott helyen: <link xlink:href="Caesar">../Caesar</link>
+        Rplots néven több file is található.
+      </para>
 
 
     </section>        
